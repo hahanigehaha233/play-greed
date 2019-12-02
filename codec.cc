@@ -9,7 +9,7 @@ ParseResult pubsub::parseMessage(Buffer* buf,
                                  string* topic,
                                  string* content)
 {
-    ParseResult result = KError;
+    ParseResult result = kError;
     const char* crlf = buf->findCRLF();
 
     if(crlf)
@@ -20,16 +20,16 @@ ParseResult pubsub::parseMessage(Buffer* buf,
             cmd->assign(buf->peek(), space);
             topic->assign(space+1, crlf);
             buf->retrieveUntil(crlf+2);
-            result = KSucces;
+            result = kSuccess;
         }
         else
         {
-            result = KError;
+            result = kError;
         }
     }
     else
     {
-        result = KContinue;
+        result = kContinue;
     }
     return result;
 }

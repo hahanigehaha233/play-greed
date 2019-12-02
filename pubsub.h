@@ -9,7 +9,7 @@ using muduo::string;
 
 class PubsubClient{
 public:
-    typedef std::function<void (pubsubClient*)> ConnectionCallback;
+    typedef std::function<void (PubsubClient*)> ConnectionCallback;
     typedef std::function<void (const string& topic,
                                 const string& content,
                                 muduo::Timestamp)> SubscribeCallback;
@@ -24,7 +24,7 @@ public:
 
     bool subscribe(const string& topic, const SubscribeCallback& cb);
     void setConnectionCallback(const ConnectionCallback& cb){
-        ConnectionCallback_ = cb;
+        connectionCallback_ = cb;
     }
 
 private:
