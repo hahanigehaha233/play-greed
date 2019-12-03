@@ -1,3 +1,5 @@
+#include<iostream>
+
 #include"codec.h"
 
 #include<muduo/net/EventLoop.h>
@@ -20,8 +22,8 @@ typedef std::set<string> ConnectionSubscription;
 class Topic:public muduo::copyable
 {
 public:
-    Topic(const string &topic)
-        : topic_(topic)
+    Topic(const string &topic,const string &onwer)
+        : topic_(topic),onwer_(onwer)
     {
     }
 
@@ -91,6 +93,7 @@ public:
         server_.setMessageCallback(
             std::bind(&GreedServer::onMessage, this, _1, _2, _3));
         loop_->runEvery(1.0, std::bind(&GreedServer::timePublish, this));
+        createTopic("utc_time","root");
     }
 
     void start()
@@ -130,9 +133,18 @@ private:
             result = parseMessage(buf, &cmd, &topic, &content);
             if (result == kSuccess)
             {
-                if (cmd == "new" && !hasTopic(topic))
+                if (cmd == "new")
                 {
-                    createTopic(topic);
+                    if(createTopic(topic,conn->name()))
+                    {
+                        LOG_INFO << conn->name() << " subscribes " << topic;
+                        doSubscribe(conn, topic);
+                    }else
+                    {
+                        string message = "info same name \r\n";
+                        conn->send(message);
+                        result = kError;
+                    }
                 }
                 else if (cmd == "getin" && noRival(topic))
                 {
@@ -141,6 +153,10 @@ private:
                 else if (cmd == "msg")
                 {
                     doPublish(conn->name(), topic, content, receiveTime);
+                }
+                else if (cmd == "unsub")
+                {
+                    doUnsubscribe(conn, topic);
                 }
                 else
                 {
@@ -187,14 +203,14 @@ private:
     {
         getTopic(topic).publish(content, time);
     }
-    bool hasTopic(const string &topic)
+    bool hasnoTopic(const string &topic)
     {
         std::map<string, std::shared_ptr<Topic>>::iterator it = topics_.find(topic);
         return (it == topics_.end());
     }
-    bool createTopic(const string &topic)
+    bool createTopic(const string &topic,const string& onwer)
     {
-        std::pair<std::map<string, std::shared_ptr<Topic>>::iterator, bool> res = topics_.insert(std::pair<string, std::shared_ptr<Topic>>(topic, std::make_shared<Topic>(topic)));
+        std::pair<std::map<string, std::shared_ptr<Topic>>::iterator, bool> res = topics_.insert(std::pair<string, std::shared_ptr<Topic>>(topic, std::make_shared<Topic>(topic,onwer)));
         return res.second;
     }
     bool noRival(const string &topic)
@@ -226,8 +242,8 @@ int main(int argc, char* argv[])
         uint16_t port = static_cast<uint16_t>(atoi(argv[1]));
         EventLoop loop;
         pubsub::GreedServer server(&loop, InetAddress(port));
-        // server.start();
-        // loop.loop();
+        server.start();
+        loop.loop();
     }
     else
     {

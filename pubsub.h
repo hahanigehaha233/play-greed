@@ -2,6 +2,7 @@
 # define _PUB_SUB_H_
 
 #include <muduo/net/TcpClient.h>
+#include "clientSingle.h"
 
 namespace pubsub
 {
@@ -22,7 +23,12 @@ public:
     void stop();
     bool connected() const;
 
+    int dealCmd(const string& cmd, const string& topic);
     bool subscribe(const string& topic, const SubscribeCallback& cb);
+    void unsubscribe(const string& topic);
+    bool publish(const string& topic, const string& content);
+    bool createRoom(const string& topic);
+    bool getinRoom(const string& topic);
     void setConnectionCallback(const ConnectionCallback& cb){
         connectionCallback_ = cb;
     }

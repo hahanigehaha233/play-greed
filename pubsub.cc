@@ -1,3 +1,5 @@
+#include<iostream>
+
 #include"pubsub.h"
 #include"codec.h"
 
@@ -12,6 +14,8 @@ PubsubClient::PubsubClient(EventLoop* loop,
 {
     client_.setConnectionCallback(
         std::bind(&PubsubClient::onConnection, this, _1));
+    client_.setMessageCallback(
+        std::bind(&PubsubClient::onMessage,this,_1,_2,_3));
 }
 
 void PubsubClient::start()
@@ -28,7 +32,45 @@ bool PubsubClient::connected() const
 {
     return conn_ && conn_->connected();
 }
+int PubsubClient::dealCmd(const string& cmd,const string& topic)
+{
+    if(cmd == "new")
+    {
+        createRoom(topic);
+    }
+    else if(cmd == "getin")
+    {
+        getinRoom(topic);
+    }
+    return 0;
+}
+bool PubsubClient::subscribe(const string& topic, const SubscribeCallback& cb)
+{
+    string message = "sub " + topic + "\r\n";
+    subscribeCallback_ = cb;
+    return send(message);
+}
 
+void PubsubClient::unsubscribe(const string& topic)
+{
+    string message = "unsub " + topic + "\r\n";
+    send(message);
+}
+bool PubsubClient::publish(const string& topic, const string& content)
+{
+    string message = "pub " + topic + "\r\n" + content + "\r\n";
+    return send(message);
+}
+bool PubsubClient::createRoom(const string& topic)
+{
+    string message = "new "+topic + "\r\n";
+    send(message);
+}
+bool PubsubClient::getinRoom(const string& topic)
+{
+    string message = "getin "+topic + "\r\n";
+    return send(message);
+}
 
 void PubsubClient::onConnection(const TcpConnectionPtr& conn)
 {
@@ -62,6 +104,10 @@ void PubsubClient::onMessage(const TcpConnectionPtr& conn,
             if(cmd == "msg" && subscribeCallback_)
             {
                 subscribeCallback_(topic, content, receiveTime);
+            }
+            else if(cmd == "info")
+            {
+                std::cout<<content<<std::endl;
             }
         }
         else if (result == kError)

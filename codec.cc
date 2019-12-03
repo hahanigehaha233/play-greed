@@ -18,7 +18,14 @@ ParseResult pubsub::parseMessage(Buffer* buf,
         if(space != crlf)
         {
             cmd->assign(buf->peek(), space);
-            topic->assign(space+1, crlf);
+            if(*cmd == "info")
+            {
+                content->assign(space+1,crlf);
+            }
+            else
+            {
+                topic->assign(space+1, crlf);
+            }
             buf->retrieveUntil(crlf+2);
             result = kSuccess;
         }
