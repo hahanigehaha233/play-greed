@@ -57,13 +57,26 @@ public:
     {
         return rival_;
     }
-    void setRival(const string &rival)
+    bool setRival(const string &rival)
     {
-        //   if(mtx.try_lock())
-        //   {
-        //       rival_ = rival;
-        //       mtx.unlock();
-        //   }
+        if(rival_ == "")
+        {
+            if(mtx.try_lock())
+            {
+                if(rival == "")
+                {
+                    mtx.unlock();
+                    return false;
+                } 
+                rival_ = rival;
+                mtx.unlock();
+                return true;
+            }
+        }
+        else
+        {
+            return false;
+        }
     }
 
 private:
@@ -137,18 +150,29 @@ private:
                 {
                     if(createTopic(topic,conn->name()))
                     {
+                        LOG_INFO << conn->name() << " create " << topic;
                         LOG_INFO << conn->name() << " subscribes " << topic;
                         doSubscribe(conn, topic);
-                    }else
+                    }
+                    else
                     {
                         string message = "info same name \r\n";
                         conn->send(message);
                         result = kError;
                     }
                 }
-                else if (cmd == "getin" && noRival(topic))
+                else if (cmd == "getin")
                 {
-                    setRival(topic);
+                    if(setRival(topic))
+                    {
+                        LOG_INFO << conn->name() << " getin " << topic;
+                    }
+                    else
+                    {
+                        string message = "info can't gein \r\n";
+                        conn->send(message);
+                        result = kError;
+                    }
                 }
                 else if (cmd == "msg")
                 {
@@ -213,13 +237,9 @@ private:
         std::pair<std::map<string, std::shared_ptr<Topic>>::iterator, bool> res = topics_.insert(std::pair<string, std::shared_ptr<Topic>>(topic, std::make_shared<Topic>(topic,onwer)));
         return res.second;
     }
-    bool noRival(const string &topic)
+    bool setRival(const string &topic)
     {
-        return getTopic(topic).getRival() == "";
-    }
-    void setRival(const string &topic)
-    {
-        getTopic(topic).setRival(topic);
+        return getTopic(topic).setRival(topic);
     }
 
     Topic &getTopic(const string &topic)

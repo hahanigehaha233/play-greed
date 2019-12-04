@@ -42,6 +42,10 @@ int PubsubClient::dealCmd(const string& cmd,const string& topic)
     {
         getinRoom(topic);
     }
+    else
+    {
+        std::cout<<"error cmd"<<std::endl;
+    }
     return 0;
 }
 bool PubsubClient::subscribe(const string& topic, const SubscribeCallback& cb)
@@ -106,6 +110,10 @@ void PubsubClient::onMessage(const TcpConnectionPtr& conn,
                 subscribeCallback_(topic, content, receiveTime);
             }
             else if(cmd == "info")
+            {
+                std::cout<<content<<std::endl;
+            }
+            else if(cmd == "getin")
             {
                 std::cout<<content<<std::endl;
             }
