@@ -53,9 +53,17 @@ public:
             (*it)->send(message);
         }
     }
+    const string getOwner()
+    {
+        return onwer_;
+    }
     const string getRival()
     {
         return rival_;
+    }
+    const string getTopicName()
+    {
+        return topic_;
     }
     bool setRival(const string &rival)
     {
@@ -82,7 +90,7 @@ public:
 private:
     string makeMessage()
     {
-        return "msg " + topic_ + "\r\n" + content_ + "\r\n" ;
+        return "info "  + content_ + "\r\n" ;
     }
     string topic_;
     string content_;
@@ -123,16 +131,30 @@ private:
         }
         else
         {
-            const ConnectionSubscription &connSub = boost::any_cast<const ConnectionSubscription &>(conn->getContext());
-            // subtle: doUnsubscribe will erase *it, so increase before calling.
-            for (ConnectionSubscription::const_iterator it = connSub.begin();
-                 it != connSub.end();)
-            {
-                doUnsubscribe(conn, *it++);
-            }
+            removeTopic(conn);
         }
     }
 
+    void removeTopic(const TcpConnectionPtr& conn)
+    {
+        const ConnectionSubscription &connSub = boost::any_cast<const ConnectionSubscription &>(conn->getContext());
+            // subtle: doUnsubscribe will erase *it, so increase before calling.
+        for (ConnectionSubscription::const_iterator it = connSub.begin();
+            it != connSub.end();)
+        {
+            if(conn->name() == getTopic(*it).getOwner())
+            {
+                Timestamp now = Timestamp::now();
+                doPublish(conn->name(),*it,"owner delete room, this room will disaper",now);
+                topics_.erase(*it);
+            }
+            else
+            {
+                doUnsubscribe(conn, *it);
+            }
+            it++;
+        }
+    }
     void onMessage(const TcpConnectionPtr &conn,
                    Buffer *buf,
                    Timestamp receiveTime)
@@ -165,7 +187,9 @@ private:
                 {
                     if(setRival(topic))
                     {
+                        doSubscribe(conn, topic);
                         LOG_INFO << conn->name() << " getin " << topic;
+                        LOG_INFO << conn->name() << " subscribes " << topic;
                     }
                     else
                     {
@@ -251,6 +275,7 @@ private:
     EventLoop *loop_;
     TcpServer server_;
     std::map<string, std::shared_ptr<Topic>> topics_;
+    //std::map<ClientInfo>
 };
 
 }// namespace pubsub
