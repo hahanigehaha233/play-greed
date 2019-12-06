@@ -1,0 +1,51 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "buildserver",
+            "type": "shell",
+            "command": "g++",
+            "args": ["-g",
+                "${workspaceFolder}/codec.o",
+                "${workspaceFolder}/greedServer.cc",
+                "-std=c++11",
+                "-I.",
+                "-o",
+                "greedServer",
+                "-lmuduo_net",
+                "-lmuduo_base",
+                "-lpthread"]
+        },
+        {
+            "label": "makecodec",
+            "type": "shell",
+            "command":"g++",
+            "args": ["-g","-I.", 
+                     "-c","${workspaceFolder}/codec.cc"]
+        },
+        {
+            "label": "makepubsub",
+            "type": "shell",
+            "command":"g++",
+            "args": ["-I.",
+                     "-c","${workspaceFolder}/pubsub.cc"]
+        },
+        {
+            "label": "buildclient",
+            "type": "shell",
+            "command":"g++",
+            "args": ["-g",
+                     "-I.",
+                     "-o","client",
+                     "${workspaceFolder}/greedClient.cc",
+                     "${workspaceFolder}/pubsub.o",
+                     "${workspaceFolder}/codec.o",
+                     "-std=c++11",
+                     "-lmuduo_net",
+                     "-lmuduo_base",
+                     "-lpthread"]
+        }
+    ]
+}

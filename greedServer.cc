@@ -19,6 +19,7 @@ namespace pubsub
 {
 typedef std::set<string> ConnectionSubscription;
 
+
 class Topic:public muduo::copyable
 {
 public:
@@ -100,6 +101,38 @@ private:
     string rival_;
     std::mutex mtx;
 };
+enum clientType {cTourist, cOwner, cRival, cSubscribe};
+class ClientInfo
+{
+public:
+    ClientInfo(const TcpConnectionPtr& conn)
+    :   ct_(cTourist),
+        conn_(conn),
+        name_(conn->name())
+    {
+    }
+    int getclientType()
+    {
+        return ct_;
+    }
+    void setclientType(const clientType& ct,const string& topic)
+    {
+        ct_ = ct;
+        topic_ = topic;
+    }
+
+    const string& getTopic()
+    {
+        return topic_;
+    }
+
+
+private:
+    TcpConnectionPtr conn_;
+    clientType ct_;
+    string topic_;
+    string name_;
+};
 
 class GreedServer: noncopyable
 {
@@ -128,32 +161,56 @@ private:
         if (conn->connected())
         {
             conn->setContext(ConnectionSubscription());
+            createUser(conn);
         }
         else
         {
-            removeTopic(conn);
+            removeUser(conn);
         }
     }
 
-    void removeTopic(const TcpConnectionPtr& conn)
+    // void removeTopic(const TcpConnectionPtr& conn)
+    // {
+    //     const ConnectionSubscription &connSub = boost::any_cast<const ConnectionSubscription &>(conn->getContext());
+    //         // subtle: doUnsubscribe will erase *it, so increase before calling.
+    //     for (ConnectionSubscription::const_iterator it = connSub.begin();
+    //         it != connSub.end();)
+    //     {
+    //         if(conn->name() == getTopic(*it).getOwner())
+    //         {
+    //             Timestamp now = Timestamp::now();
+    //             doPublish(conn->name(),*it,"owner delete room, this room will disaper",now);
+    //             topics_.erase(*it);
+    //         }
+    //         else
+    //         {
+    //             doUnsubscribe(conn, *it);
+    //         }
+    //         it++;
+    //     }
+    // }
+    void removeUser(const TcpConnectionPtr& conn)
     {
-        const ConnectionSubscription &connSub = boost::any_cast<const ConnectionSubscription &>(conn->getContext());
-            // subtle: doUnsubscribe will erase *it, so increase before calling.
-        for (ConnectionSubscription::const_iterator it = connSub.begin();
-            it != connSub.end();)
+        std::map<string,std::shared_ptr<ClientInfo>>::iterator it =  users_.find(conn->name());
+        ClientInfo user = (*it->second);
+        if((user.getclientType() == cOwner))
         {
-            if(conn->name() == getTopic(*it).getOwner())
-            {
-                Timestamp now = Timestamp::now();
-                doPublish(conn->name(),*it,"owner delete room, this room will disaper",now);
-                topics_.erase(*it);
-            }
-            else
-            {
-                doUnsubscribe(conn, *it);
-            }
-            it++;
+            Timestamp now = Timestamp::now();
+            doPublish(conn->name(),user.getTopic(),"owner delete room, this room will disaper",now);
+            //后续工作
+            topics_.erase(conn->name());
+            return;
         }
+        else if(user.getclientType() == cRival)
+        {
+            getTopic(user.getTopic()).setRival("");
+            return;
+        }
+        else if(user.getclientType() == cSubscribe)
+        {
+            doUnsubscribe(conn, user.getTopic());
+        }
+        users_.erase(conn->name());
     }
     void onMessage(const TcpConnectionPtr &conn,
                    Buffer *buf,
@@ -168,25 +225,29 @@ private:
             result = parseMessage(buf, &cmd, &topic, &content);
             if (result == kSuccess)
             {
+                std::map<string,std::shared_ptr<ClientInfo>>::iterator it =  users_.find(conn->name());
+                ClientInfo& user = (*it->second);
                 if (cmd == "new")
                 {
-                    if(createTopic(topic,conn->name()))
+                    if(user.getclientType() == cTourist && createTopic(topic,conn->name()))
                     {
+                        user.setclientType(cOwner,topic);
                         LOG_INFO << conn->name() << " create " << topic;
-                        LOG_INFO << conn->name() << " subscribes " << topic;
                         doSubscribe(conn, topic);
+                        LOG_INFO << conn->name() << " subscribes " << topic;
                     }
                     else
                     {
-                        string message = "info same name \r\n";
+                        string message = "info same name or you have a room already.\r\n";
                         conn->send(message);
                         result = kError;
                     }
                 }
                 else if (cmd == "getin")
                 {
-                    if(setRival(topic))
+                    if(user.getclientType() == cTourist && setRival(topic))
                     {
+                        user.setclientType(cRival,topic);
                         doSubscribe(conn, topic);
                         LOG_INFO << conn->name() << " getin " << topic;
                         LOG_INFO << conn->name() << " subscribes " << topic;
@@ -261,6 +322,11 @@ private:
         std::pair<std::map<string, std::shared_ptr<Topic>>::iterator, bool> res = topics_.insert(std::pair<string, std::shared_ptr<Topic>>(topic, std::make_shared<Topic>(topic,onwer)));
         return res.second;
     }
+    bool createUser(const TcpConnectionPtr &conn)
+    {
+        std::pair<std::map<string,std::shared_ptr<ClientInfo>>::iterator,bool> res = users_.insert(std::pair<string, std::shared_ptr<ClientInfo>>(conn->name(),std::make_shared<ClientInfo>(conn)));
+        return res.second;
+    }
     bool setRival(const string &topic)
     {
         return getTopic(topic).setRival(topic);
@@ -275,7 +341,7 @@ private:
     EventLoop *loop_;
     TcpServer server_;
     std::map<string, std::shared_ptr<Topic>> topics_;
-    //std::map<ClientInfo>
+    std::map<string,std::shared_ptr<ClientInfo>> users_;
 };
 
 }// namespace pubsub
