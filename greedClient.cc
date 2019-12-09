@@ -16,7 +16,6 @@ string g_topic;
 string g_content;
 
 
-
 void connection(PubsubClient* client)
 {
   if (client->connected())

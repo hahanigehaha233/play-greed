@@ -42,16 +42,28 @@ int PubsubClient::dealCmd(const string& cmd,const string& topic)
     {
         getinRoom(topic);
     }
+    else if(cmd == "watch")
+    {
+        subscribe(topic);
+    }
+    else if(cmd == "msg")
+    {
+        messageTest(topic);
+    }
     else
     {
         std::cout<<"error cmd"<<std::endl;
     }
     return 0;
 }
-bool PubsubClient::subscribe(const string& topic, const SubscribeCallback& cb)
+void printCheckerboard()
 {
+    std::cout<<"checkerboard info"<<std::endl;
+}
+bool PubsubClient::subscribe(const string& topic)
+{
+    checkerBoardCallback_ = std::bind(&printCheckerboard);
     string message = "sub " + topic + "\r\n";
-    subscribeCallback_ = cb;
     return send(message);
 }
 
@@ -69,6 +81,11 @@ bool PubsubClient::createRoom(const string& topic)
 {
     string message = "new "+topic + "\r\n";
     send(message);
+}
+bool PubsubClient::messageTest(const string& topic)
+{
+    string message = "msg "+ topic + "\r\n" + "messagetest" + "\r\n";
+    return send(message);
 }
 bool PubsubClient::getinRoom(const string& topic)
 {
@@ -105,9 +122,9 @@ void PubsubClient::onMessage(const TcpConnectionPtr& conn,
         result = parseMessage(buf, &cmd, &topic, &content);
         if(result == kSuccess)
         {
-            if(cmd == "msg" && subscribeCallback_)
+            if(cmd == "msg" && checkerBoardCallback_)
             {
-                subscribeCallback_(topic, content, receiveTime);
+                checkerBoardCallback_();
             }
             else if(cmd == "info")
             {

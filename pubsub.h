@@ -14,6 +14,7 @@ public:
     typedef std::function<void (const string& topic,
                                 const string& content,
                                 muduo::Timestamp)> SubscribeCallback;
+    typedef std::function<void ()> CheckerBoardCallback;
 
     PubsubClient(muduo::net::EventLoop* loop,
                  const muduo::net::InetAddress& hubAddr,
@@ -23,8 +24,9 @@ public:
     void stop();
     bool connected() const;
 
+    bool messageTest(const string& topic);
     int dealCmd(const string& cmd, const string& topic);
-    bool subscribe(const string& topic, const SubscribeCallback& cb);
+    bool subscribe(const string& topic);
     void unsubscribe(const string& topic);
     bool publish(const string& topic, const string& content);
     bool createRoom(const string& topic);
@@ -49,6 +51,7 @@ private:
     muduo::net::TcpConnectionPtr conn_;
     ConnectionCallback connectionCallback_;
     SubscribeCallback subscribeCallback_;
+    CheckerBoardCallback checkerBoardCallback_;
 
 };// class pubsub
 }// namespace pubsub

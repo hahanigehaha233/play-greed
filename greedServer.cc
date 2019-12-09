@@ -18,7 +18,7 @@ using namespace::net;
 namespace pubsub
 {
 typedef std::set<string> ConnectionSubscription;
-
+enum publishType{pInfo, pMsg};
 
 class Topic:public muduo::copyable
 {
@@ -42,11 +42,19 @@ public:
         audiences_.erase(conn);
     }
 
-    void publish(const string &content, Timestamp time)
+    void publish(const string &content, Timestamp time, const publishType &pt)
     {
         content_ = content;
         lastPubTime_ = time;
-        string message = makeMessage();
+        string message;
+        if(pt == pMsg)
+        {
+            message = makeMessage();
+        }
+        else
+        {
+            message = makeSysMessage();
+        }
         for (std::set<TcpConnectionPtr>::iterator it = audiences_.begin();
              it != audiences_.end();
              ++it)
@@ -89,9 +97,13 @@ public:
     }
 
 private:
-    string makeMessage()
+    string makeSysMessage()
     {
         return "info "  + content_ + "\r\n" ;
+    }
+    string makeMessage()
+    {
+        return "msg " + topic_ + "\r\n" + content_ + "\r\n";
     }
     string topic_;
     string content_;
@@ -196,7 +208,7 @@ private:
         if((user.getclientType() == cOwner))
         {
             Timestamp now = Timestamp::now();
-            doPublish(conn->name(),user.getTopic(),"owner delete room, this room will disaper",now);
+            doPublish(conn->name(),user.getTopic(),"owner delete room, this room will disaper",now, pInfo);
             //后续工作
             topics_.erase(conn->name());
             return;
@@ -261,11 +273,20 @@ private:
                 }
                 else if (cmd == "msg")
                 {
-                    doPublish(conn->name(), topic, content, receiveTime);
+                    doPublish(conn->name(), topic, content, receiveTime, pMsg);
                 }
                 else if (cmd == "unsub")
                 {
                     doUnsubscribe(conn, topic);
+                }
+                else if (cmd == "sub")
+                {
+                    if(user.getclientType() == cTourist)
+                    {
+                        LOG_INFO << conn->name() << " subscribes " << topic;
+                        user.setclientType(cSubscribe, topic);
+                        doSubscribe(conn, topic);
+                    }
                 }
                 else
                 {
@@ -283,7 +304,7 @@ private:
     void timePublish()
     {
         Timestamp now = Timestamp::now();
-        doPublish("internal", "utc_time", now.toFormattedString(), now);
+        doPublish("internal", "utc_time", now.toFormattedString(), now, pMsg);
     }
 
     void doSubscribe(const TcpConnectionPtr &conn,
@@ -308,9 +329,10 @@ private:
     void doPublish(const string &source,
                    const string &topic,
                    const string &content,
-                   Timestamp time)
+                   Timestamp time,
+                   const publishType &pt)
     {
-        getTopic(topic).publish(content, time);
+        getTopic(topic).publish(content, time, pt);
     }
     bool hasnoTopic(const string &topic)
     {

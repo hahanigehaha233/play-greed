@@ -25,6 +25,15 @@ ParseResult pubsub::parseMessage(Buffer* buf,
             else
             {
                 topic->assign(space+1, crlf);
+                if(*cmd == "msg")
+                {
+                    const char* start = crlf + 2;
+                    crlf = buf->findCRLF(start);
+                    if(crlf)
+                    {
+                        content->assign(start, crlf);
+                    }
+                }
             }
             buf->retrieveUntil(crlf+2);
             result = kSuccess;
