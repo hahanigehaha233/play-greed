@@ -18,6 +18,43 @@ using namespace::net;
 namespace pubsub
 {
 typedef std::set<string> ConnectionSubscription;
+
+enum clientType {cTourist, cOwner, cRival, cSubscribe};
+class ClientInfo
+{
+public:
+    ClientInfo(const TcpConnectionPtr& conn)
+    :   ct_(cTourist),
+        conn_(conn),
+        name_(conn->name())
+    {
+    }
+    int getclientType()
+    {
+        return ct_;
+    }
+    void setclientTourist()
+    {
+        ct_ = cTourist;
+    }
+    void setclientType(const clientType& ct,const string& topic)
+    {
+        ct_ = ct;
+        topic_ = topic;
+    }
+
+    const string& getTopic()
+    {
+        return topic_;
+    }
+    TcpConnectionPtr conn_;
+
+private:
+    clientType ct_;
+    string topic_;
+    string name_;
+};
+
 enum publishType{pInfo, pMsg};
 
 class Topic:public muduo::copyable
@@ -28,19 +65,33 @@ public:
     {
     }
 
-    void add(const TcpConnectionPtr &conn)
+    void add(const std::shared_ptr<ClientInfo> &ci)
     {
-        audiences_.insert(conn);
+        audiences_.insert(ci);
         if (lastPubTime_.valid())
         {
-            conn->send(makeMessage());
+            ci->conn_->send(makeMessage());
         }
     }
 
-    void remove(const TcpConnectionPtr &conn)
+    void remove(const std::shared_ptr<ClientInfo> &ci)
     {
-        audiences_.erase(conn);
+        audiences_.erase(ci);
     }
+
+    void userUnsubscribe()
+    {
+        for (std::set<std::shared_ptr<ClientInfo>>::iterator it = audiences_.begin();
+             it != audiences_.end();
+             ++it)
+        {
+            (*it)->setclientTourist();
+            ConnectionSubscription *connSub = boost::any_cast<ConnectionSubscription>((*it)->conn_->getMutableContext());
+            //std::cout<<"it++"<<std::endl;
+            connSub->erase(topic_);
+        }
+    }
+
 
     void publish(const string &content, Timestamp time, const publishType &pt)
     {
@@ -55,11 +106,11 @@ public:
         {
             message = makeSysMessage();
         }
-        for (std::set<TcpConnectionPtr>::iterator it = audiences_.begin();
+        for (std::set<std::shared_ptr<ClientInfo>>::iterator it = audiences_.begin();
              it != audiences_.end();
              ++it)
         {
-            (*it)->send(message);
+            (*it)->conn_->send(message);
         }
     }
     const string getOwner()
@@ -108,42 +159,10 @@ private:
     string topic_;
     string content_;
     Timestamp lastPubTime_;
-    std::set<TcpConnectionPtr> audiences_;
+    std::set<std::shared_ptr<ClientInfo>> audiences_;
     string onwer_;
     string rival_;
     std::mutex mtx;
-};
-enum clientType {cTourist, cOwner, cRival, cSubscribe};
-class ClientInfo
-{
-public:
-    ClientInfo(const TcpConnectionPtr& conn)
-    :   ct_(cTourist),
-        conn_(conn),
-        name_(conn->name())
-    {
-    }
-    int getclientType()
-    {
-        return ct_;
-    }
-    void setclientType(const clientType& ct,const string& topic)
-    {
-        ct_ = ct;
-        topic_ = topic;
-    }
-
-    const string& getTopic()
-    {
-        return topic_;
-    }
-
-
-private:
-    TcpConnectionPtr conn_;
-    clientType ct_;
-    string topic_;
-    string name_;
 };
 
 class GreedServer: noncopyable
@@ -208,15 +227,14 @@ private:
         if((user.getclientType() == cOwner))
         {
             Timestamp now = Timestamp::now();
-            doPublish(conn->name(),user.getTopic(),"owner delete room, this room will disaper",now, pInfo);
-            //后续工作
-            topics_.erase(conn->name());
-            return;
+            doPublish(conn->name(),user.getTopic(),"Owner delete room, you become tourist.",now, pInfo);
+            getTopic(user.getTopic()).userUnsubscribe();
+            topics_.erase(user.getTopic());
         }
         else if(user.getclientType() == cRival)
         {
             getTopic(user.getTopic()).setRival("");
-            return;
+            user.setclientTourist();
         }
         else if(user.getclientType() == cSubscribe)
         {
@@ -245,8 +263,8 @@ private:
                     {
                         user.setclientType(cOwner,topic);
                         LOG_INFO << conn->name() << " create " << topic;
-                        doSubscribe(conn, topic);
                         LOG_INFO << conn->name() << " subscribes " << topic;
+                        doSubscribe(conn, topic);
                     }
                     else
                     {
@@ -287,6 +305,12 @@ private:
                         user.setclientType(cSubscribe, topic);
                         doSubscribe(conn, topic);
                     }
+                    else
+                    {
+                        string message = "info you are in a room\r\n";
+                        conn->send(message);
+                        result = kError;
+                    }
                 }
                 else
                 {
@@ -311,16 +335,15 @@ private:
                      const string &topic)
     {
         ConnectionSubscription *connSub = boost::any_cast<ConnectionSubscription>(conn->getMutableContext());
-
         connSub->insert(topic);
-        getTopic(topic).add(conn);
+        getTopic(topic).add(getClientInfo(conn->name()));
     }
 
     void doUnsubscribe(const TcpConnectionPtr &conn,
                        const string &topic)
     {
         LOG_INFO << conn->name() << " unsubscribes " << topic;
-        getTopic(topic).remove(conn);
+        getTopic(topic).remove(getClientInfo(conn->name()));
         // topic could be the one to be destroyed, so don't use it after erasing.
         ConnectionSubscription *connSub = boost::any_cast<ConnectionSubscription>(conn->getMutableContext());
         connSub->erase(topic);
@@ -358,6 +381,12 @@ private:
     {
         std::map<string, std::shared_ptr<Topic>>::iterator it = topics_.find(topic);
         return (*it->second);
+    }
+
+    std::shared_ptr<ClientInfo> &getClientInfo(const string& name)
+    {
+        std::map<string,std::shared_ptr<ClientInfo>>::iterator it = users_.find(name);
+        return it->second;
     }
 
     EventLoop *loop_;
