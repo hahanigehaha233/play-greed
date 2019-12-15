@@ -45,7 +45,17 @@
                      "-std=c++11",
                      "-lmuduo_net",
                      "-lmuduo_base",
-                     "-lpthread"]
+                     "-lpthread",
+                     "-lcurses"]
+        },
+        {
+            "label": "buildcurses",
+            "type": "shell",
+            "command":"g++",
+            "args": ["-g",
+                     "-o","a",
+                     "${workspaceFolder}/a.cc",
+                     "-lcurses",]   
         }
     ]
 }
