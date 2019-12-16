@@ -8,7 +8,8 @@
             "type": "shell",
             "command": "g++",
             "args": ["-g",
-                "${workspaceFolder}/codec.o",
+                "${workspaceFolder}/ProtobufCodec.cc",
+                "${workspaceFolder}/info.pb.cc",
                 "${workspaceFolder}/greedServer.cc",
                 "-std=c++11",
                 "-I.",
@@ -16,7 +17,9 @@
                 "greedServer",
                 "-lmuduo_net",
                 "-lmuduo_base",
-                "-lpthread"]
+                "-lpthread",
+                "-lz",
+                "-lprotobuf"]
         },
         {
             "label": "makecodec",
@@ -24,6 +27,13 @@
             "command":"g++",
             "args": ["-g","-I.", 
                      "-c","${workspaceFolder}/codec.cc"]
+        },
+        {
+            "label": "makeproto",
+            "type": "shell",
+            "command":"g++",
+            "args":["-g","-I.",
+                    "-c", "${workspaceFolder}/ProtobufCodec.cc","${workspaceFolder}/info.pb.cc"]
         },
         {
             "label": "makepubsub",
@@ -40,13 +50,16 @@
                      "-I.",
                      "-o","client",
                      "${workspaceFolder}/greedClient.cc",
-                     "${workspaceFolder}/pubsub.o",
-                     "${workspaceFolder}/codec.o",
+                     "${workspaceFolder}/pubsub.cc",
+                     "${workspaceFolder}/info.pb.cc",
+                     "${workspaceFolder}/ProtobufCodec.cc",
                      "-std=c++11",
                      "-lmuduo_net",
                      "-lmuduo_base",
                      "-lpthread",
-                     "-lcurses"]
+                     "-lcurses",
+                     "-lprotobuf",
+                     "-lz"]
         },
         {
             "label": "buildcurses",

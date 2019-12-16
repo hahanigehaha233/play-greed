@@ -2,20 +2,36 @@
 
 #include"pubsub.h"
 #include"codec.h"
+#include <muduo/base/Logging.h>
 
 using namespace muduo;
 using namespace muduo::net;
 using namespace pubsub;
 
+void onUnknownMessage(const TcpConnectionPtr& conn, const MessagePtr& message, Timestamp)
+{
+    LOG_INFO << "onUnknownMessage: " << message->GetTypeName() << message->DebugString();
+}
 PubsubClient::PubsubClient(EventLoop* loop,
                            const InetAddress& hubAddr,
                            const string& name)
     : client_(loop, hubAddr, name)
+      ,dispatcher_(std::bind(&onUnknownMessage,_1,_2,_3))
+      ,codec_(std::bind(&ProtobufDispatcher::onProtobufMessage,&dispatcher_,_1,_2,_3))
 {
+    dispatcher_.registerMessageCallback<pubsub::SystemAns>(
+        std::bind(&PubsubClient::onSystemAns, this, _1, _2, _3));
     client_.setConnectionCallback(
         std::bind(&PubsubClient::onConnection, this, _1));
     client_.setMessageCallback(
-        std::bind(&PubsubClient::onMessage,this,_1,_2,_3));
+        std::bind(&ProtobufCodec::onMessage,&codec_,_1,_2,_3));
+}
+
+
+
+void PubsubClient::onSystemAns(const TcpConnectionPtr& conn, const SystemAnsPtr& message, Timestamp)
+{
+    LOG_INFO << "onSystemAns: " << message->GetTypeName() << message->DebugString();
 }
 
 void PubsubClient::start()
@@ -34,26 +50,31 @@ bool PubsubClient::connected() const
 }
 int PubsubClient::dealCmd(const string& cmd,const string& topic)
 {
-    if(cmd == "new")
-    {
-        createRoom(topic);
-    }
-    else if(cmd == "getin")
-    {
-        getinRoom(topic);
-    }
-    else if(cmd == "watch")
-    {
-        subscribe(topic);
-    }
-    else if(cmd == "msg")
-    {
-        messageTest(topic);
-    }
-    else
-    {
-        std::cout<<"error cmd"<<std::endl;
-    }
+    // if(cmd == "new")
+    // {
+    //     createRoom(topic);
+    // }
+    // else if(cmd == "getin")
+    // {
+    //     getinRoom(topic);
+    // }
+    // else if(cmd == "watch")
+    // {
+    //     subscribe(topic);
+    // }
+    // else if(cmd == "msg")
+    // {
+    //     messageTest(topic);
+    // }
+    // else
+    // {
+    //     std::cout<<"error cmd"<<std::endl;
+    // }
+    pubsub::SystemQuery query;
+    query.set_cmd(cmd);
+    query.set_topic(topic);
+    messageToSend_ = &query;
+    codec_.send(conn_, *messageToSend_);
     return 0;
 }
 void printCheckerboard()
@@ -109,38 +130,38 @@ void PubsubClient::onConnection(const TcpConnectionPtr& conn)
     }
 }
 
-void PubsubClient::onMessage(const TcpConnectionPtr& conn,
-                             Buffer* buf,
-                             Timestamp receiveTime)
-{
-    ParseResult result = kSuccess;
-    while(result == kSuccess)
-    {
-        string cmd;
-        string topic;
-        string content;
-        result = parseMessage(buf, &cmd, &topic, &content);
-        if(result == kSuccess)
-        {
-            if(cmd == "msg" && checkerBoardCallback_)
-            {
-                checkerBoardCallback_();
-            }
-            else if(cmd == "info")
-            {
-                std::cout<<content<<std::endl;
-            }
-            else if(cmd == "getin")
-            {
-                std::cout<<content<<std::endl;
-            }
-        }
-        else if (result == kError)
-        {
-            conn->shutdown();
-        }
-    }
-}
+// void PubsubClient::onMessage(const TcpConnectionPtr& conn,
+//                              Buffer* buf,
+//                              Timestamp receiveTime)
+// {
+//     ParseResult result = kSuccess;
+//     while(result == kSuccess)
+//     {
+//         string cmd;
+//         string topic;
+//         string content;
+//         //result = parseMessage(buf, &cmd, &topic, &content);
+//         if(result == kSuccess)
+//         {
+//             if(cmd == "msg" && checkerBoardCallback_)
+//             {
+//                 checkerBoardCallback_();
+//             }
+//             else if(cmd == "info")
+//             {
+//                 std::cout<<content<<std::endl;
+//             }
+//             else if(cmd == "getin")
+//             {
+//                 std::cout<<content<<std::endl;
+//             }
+//         }
+//         else if (result == kError)
+//         {
+//             conn->shutdown();
+//         }
+//     }
+// }
 
 bool PubsubClient::send(const string& message)
 {

@@ -2,11 +2,15 @@
 # define _PUB_SUB_H_
 
 #include <muduo/net/TcpClient.h>
-#include "clientSingle.h"
+#include <muduo/net/EventLoop.h>
+#include "ProtobufCodec.h"
+#include "dispatcher.h"
+#include "info.pb.h"
 
 namespace pubsub
 {
 using muduo::string;
+typedef std::shared_ptr<pubsub::SystemAns> SystemAnsPtr;
 
 class PubsubClient{
 public:
@@ -34,6 +38,8 @@ public:
     void setConnectionCallback(const ConnectionCallback& cb){
         connectionCallback_ = cb;
     }
+    //void onUnknownMessage(const  muduo::net::TcpConnectionPtr& conn, const MessagePtr& message, muduo::Timestamp);
+    void onSystemAns(const muduo::net::TcpConnectionPtr& conn, const SystemAnsPtr& message, muduo::Timestamp);
 
 private:
     /// conn change
@@ -49,9 +55,12 @@ private:
 private:
     muduo::net::TcpClient client_;
     muduo::net::TcpConnectionPtr conn_;
+    ProtobufCodec codec_;
+    ProtobufDispatcher dispatcher_;
     ConnectionCallback connectionCallback_;
     SubscribeCallback subscribeCallback_;
     CheckerBoardCallback checkerBoardCallback_;
+    google::protobuf::Message* messageToSend_;
 
 };// class pubsub
 }// namespace pubsub
