@@ -12,6 +12,7 @@ namespace pubsub
 using muduo::string;
 typedef std::shared_ptr<pubsub::SystemAns> SystemAnsPtr;
 typedef std::shared_ptr<pubsub::ShowInfo> ShowRoomInfoPtr;
+typedef std::shared_ptr<pubsub::GridInfo> GridInfoPtr;
 
 class PubsubClient{
 public:
@@ -45,6 +46,7 @@ public:
     //void onUnknownMessage(const  muduo::net::TcpConnectionPtr& conn, const MessagePtr& message, muduo::Timestamp);
     void onSystemAns(const muduo::net::TcpConnectionPtr& conn, const SystemAnsPtr& message, muduo::Timestamp);
     void onRoomInfo(const muduo::net::TcpConnectionPtr& conn, const ShowRoomInfoPtr& message, muduo::Timestamp);
+    void onGridInfo(const muduo::net::TcpConnectionPtr& conn, const GridInfoPtr& message, muduo::Timestamp);
 
 private:
     /// conn change
@@ -66,6 +68,7 @@ private:
     SubscribeCallback subscribeCallback_;
     CheckerBoardCallback checkerBoardCallback_;
     google::protobuf::Message* messageToSend_;
+    int attribs[9];
 
 };// class pubsub
 }// namespace pubsub

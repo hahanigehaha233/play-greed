@@ -18,6 +18,8 @@
 using namespace muduo;
 using namespace::net;
 
+#define rnd(x) (int) ((lrand48() % (x))+1)
+
 namespace pubsub
 {
 typedef std::set<string> ConnectionSubscription;
@@ -58,6 +60,10 @@ private:
     string name_;
 };
 
+typedef struct gridPos{
+    int x;
+    int y;
+} gridPos;
 
 class Topic:public muduo::copyable
 {
@@ -65,6 +71,18 @@ public:
     Topic(const string &topic,const string &onwer, const Timestamp& createdTime)
         : topic_(topic),onwer_(onwer),createdTime_(createdTime)
     {
+        for(int i = 0;i < 19;++i){
+            for(int j = 0;j < 80;++j){
+                grid[i][j] = rnd(9);
+            }
+        }
+        o.x = rnd(19) - 1;
+        o.y = rnd(80) - 1;
+        grid[o.x][o.y] = 0;
+        r.x = rnd(19) - 1;
+        r.y = rnd(80) - 1;
+        grid[r.x][r.y] = 0;
+        gridToString();
     }
 
     void add(const std::shared_ptr<ClientInfo> &ci)
@@ -122,6 +140,12 @@ public:
     {
         return topic_;
     }
+    const gridPos& getOwnerPos(){
+        return o;
+    }
+    const gridPos& getRivalPos(){
+        return r;
+    }
     void setRivalEmpty()
     {
         if(mtx.try_lock())
@@ -154,6 +178,18 @@ public:
             return false;
         }
     }
+    const string& getGrid(){
+        return gridString;
+    }
+    const string& gridToString()
+    {
+        for(int i = 0;i < 19;++i){
+            for(int j = 0;j < 80;++j){
+                gridString += grid[i][j] + '0';
+            }
+        }
+        return gridString;
+    }
 public: Timestamp createdTime_;
 private:
     string makeSysMessage()
@@ -170,6 +206,9 @@ private:
     std::set<std::shared_ptr<ClientInfo>> audiences_;
     string onwer_;
     string rival_;
+    int grid[19][80];
+    string gridString;
+    gridPos o, r;
     std::mutex mtx;
 };
 
@@ -209,6 +248,22 @@ private:
         LOG_INFO << "onUnknownMessage: " << message->GetTypeName();
         conn->shutdown();
     }
+    void sendGridInfo(const TcpConnectionPtr& conn,const string& topic){
+        string s = getTopic(topic).getGrid();
+        pubsub::GridInfo gi;
+        gi.set_grid(s);
+        pubsub::Pos* gpo = gi.mutable_o();
+        gridPos owerpos = getTopic(topic).getOwnerPos();
+        gpo->set_x(owerpos.x);
+        gpo->set_y(owerpos.y);
+        pubsub::Pos* gpr = gi.mutable_r();
+        gridPos rivalpos = getTopic(topic).getRivalPos();
+        gpr->set_x(rivalpos.x);
+        gpr->set_y(rivalpos.y);
+        google::protobuf::Message* MessageToSend;
+        MessageToSend = &gi;
+        codec_.send(conn, *MessageToSend);
+    }
     void onQuery(const TcpConnectionPtr& conn,
                const SystemQueryPtr& message,
                Timestamp)
@@ -227,6 +282,7 @@ private:
                 LOG_INFO << conn->name() << " create " << topic;
                 LOG_INFO << conn->name() << " subscribes " << topic;
                 doSubscribe(conn, topic);
+                sendGridInfo(conn, topic);
             }
             else
             {
@@ -243,6 +299,7 @@ private:
                 doSubscribe(conn, topic);
                 LOG_INFO << conn->name() << " getin " << topic;
                 LOG_INFO << conn->name() << " subscribes " << topic;
+                sendGridInfo(conn, topic);
             }
             else
             {
@@ -299,6 +356,7 @@ private:
                 LOG_INFO << conn->name() << " subscribes " << topic;
                 user.setclientType(cSubscribe, topic);
                 doSubscribe(conn, topic);
+                sendGridInfo(conn, topic);
             }
             else
             {
@@ -423,88 +481,7 @@ private:
     ProtobufDispatcher dispatcher_;
     ProtobufCodec codec_;
 
-        // void onMessage(const TcpConnectionPtr &conn,
-    //                Buffer *buf,
-    //                Timestamp receiveTime)
-    // {
-    //     ParseResult result = kSuccess;
-    //     while (result == kSuccess)
-    //     {
-    //         string cmd;
-    //         string topic;
-    //         string content;
-    //         result = parseMessage(buf, &cmd, &topic, &content);
-    //         if (result == kSuccess)
-    //         {
-    //             std::map<string,std::shared_ptr<ClientInfo>>::iterator it =  users_.find(conn->name());
-    //             ClientInfo& user = (*it->second);
-    //             if (cmd == "new")
-    //             {
-    //                 if(user.getclientType() == cTourist && createTopic(topic,conn->name()))
-    //                 {
-    //                     user.setclientType(cOwner,topic);
-    //                     LOG_INFO << conn->name() << " create " << topic;
-    //                     LOG_INFO << conn->name() << " subscribes " << topic;
-    //                     doSubscribe(conn, topic);
-    //                 }
-    //                 else
-    //                 {
-    //                     string message = "info same name or you have a room already.\r\n";
-    //                     conn->send(message);
-    //                     result = kError;
-    //                 }
-    //             }
-    //             else if (cmd == "getin")
-    //             {
-    //                 if(user.getclientType() == cTourist && setRival(topic))
-    //                 {
-    //                     user.setclientType(cRival,topic);
-    //                     doSubscribe(conn, topic);
-    //                     LOG_INFO << conn->name() << " getin " << topic;
-    //                     LOG_INFO << conn->name() << " subscribes " << topic;
-    //                 }
-    //                 else
-    //                 {
-    //                     string message = "info can't gein \r\n";
-    //                     conn->send(message);
-    //                     result = kError;
-    //                 }
-    //             }
-    //             else if (cmd == "msg")
-    //             {
-    //                 doPublish(conn->name(), topic, content, receiveTime, pMsg);
-    //             }
-    //             else if (cmd == "unsub")
-    //             {
-    //                 doUnsubscribe(conn, topic);
-    //             }
-    //             else if (cmd == "sub")
-    //             {
-    //                 if(user.getclientType() == cTourist)
-    //                 {
-    //                     LOG_INFO << conn->name() << " subscribes " << topic;
-    //                     user.setclientType(cSubscribe, topic);
-    //                     doSubscribe(conn, topic);
-    //                 }
-    //                 else
-    //                 {
-    //                     string message = "info you are in a room\r\n";
-    //                     conn->send(message);
-    //                     result = kError;
-    //                 }
-    //             }
-    //             else
-    //             {
-    //                 conn->shutdown();
-    //                 result = kError;
-    //             }
-    //         }
-    //         else if (result == kError)
-    //         {
-    //             conn->shutdown();
-    //         }
-    //     }
-    // }
+
 };
 
 }// namespace pubsub

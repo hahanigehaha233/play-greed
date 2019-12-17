@@ -1,13 +1,13 @@
 package pubsub;
 
 message SystemQuery {
-    //required int64 id = 1;
+    //required int32 id = 1;
     required string cmd = 2;
     optional string topic = 3;
 }
 
 message SystemAns {
-   // required int64 id = 1;
+   // required int32 id = 1;
     required string content = 2;
 }
 
@@ -20,4 +20,14 @@ message RoomInfo {
 
 message ShowInfo {
     repeated RoomInfo ri = 1;
+}
+
+message Pos{
+    required int32 x = 1;
+    required int32 y = 2;
+}
+message GridInfo {
+    required Pos o = 1;
+    required Pos r = 2;
+    required string grid = 3;
 }

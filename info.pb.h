@@ -37,6 +37,8 @@ class SystemQuery;
 class SystemAns;
 class RoomInfo;
 class ShowInfo;
+class Pos;
+class GridInfo;
 
 // ===================================================================
 
@@ -431,6 +433,203 @@ class ShowInfo : public ::google::protobuf::Message {
 
   void InitAsDefaultInstance();
   static ShowInfo* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Pos : public ::google::protobuf::Message {
+ public:
+  Pos();
+  virtual ~Pos();
+
+  Pos(const Pos& from);
+
+  inline Pos& operator=(const Pos& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Pos& default_instance();
+
+  void Swap(Pos* other);
+
+  // implements Message ----------------------------------------------
+
+  Pos* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Pos& from);
+  void MergeFrom(const Pos& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required int32 x = 1;
+  inline bool has_x() const;
+  inline void clear_x();
+  static const int kXFieldNumber = 1;
+  inline ::google::protobuf::int32 x() const;
+  inline void set_x(::google::protobuf::int32 value);
+
+  // required int32 y = 2;
+  inline bool has_y() const;
+  inline void clear_y();
+  static const int kYFieldNumber = 2;
+  inline ::google::protobuf::int32 y() const;
+  inline void set_y(::google::protobuf::int32 value);
+
+  // @@protoc_insertion_point(class_scope:pubsub.Pos)
+ private:
+  inline void set_has_x();
+  inline void clear_has_x();
+  inline void set_has_y();
+  inline void clear_has_y();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::google::protobuf::int32 x_;
+  ::google::protobuf::int32 y_;
+  friend void  protobuf_AddDesc_info_2eproto();
+  friend void protobuf_AssignDesc_info_2eproto();
+  friend void protobuf_ShutdownFile_info_2eproto();
+
+  void InitAsDefaultInstance();
+  static Pos* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class GridInfo : public ::google::protobuf::Message {
+ public:
+  GridInfo();
+  virtual ~GridInfo();
+
+  GridInfo(const GridInfo& from);
+
+  inline GridInfo& operator=(const GridInfo& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const GridInfo& default_instance();
+
+  void Swap(GridInfo* other);
+
+  // implements Message ----------------------------------------------
+
+  GridInfo* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const GridInfo& from);
+  void MergeFrom(const GridInfo& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required .pubsub.Pos o = 1;
+  inline bool has_o() const;
+  inline void clear_o();
+  static const int kOFieldNumber = 1;
+  inline const ::pubsub::Pos& o() const;
+  inline ::pubsub::Pos* mutable_o();
+  inline ::pubsub::Pos* release_o();
+  inline void set_allocated_o(::pubsub::Pos* o);
+
+  // required .pubsub.Pos r = 2;
+  inline bool has_r() const;
+  inline void clear_r();
+  static const int kRFieldNumber = 2;
+  inline const ::pubsub::Pos& r() const;
+  inline ::pubsub::Pos* mutable_r();
+  inline ::pubsub::Pos* release_r();
+  inline void set_allocated_r(::pubsub::Pos* r);
+
+  // required string grid = 3;
+  inline bool has_grid() const;
+  inline void clear_grid();
+  static const int kGridFieldNumber = 3;
+  inline const ::std::string& grid() const;
+  inline void set_grid(const ::std::string& value);
+  inline void set_grid(const char* value);
+  inline void set_grid(const char* value, size_t size);
+  inline ::std::string* mutable_grid();
+  inline ::std::string* release_grid();
+  inline void set_allocated_grid(::std::string* grid);
+
+  // @@protoc_insertion_point(class_scope:pubsub.GridInfo)
+ private:
+  inline void set_has_o();
+  inline void clear_has_o();
+  inline void set_has_r();
+  inline void clear_has_r();
+  inline void set_has_grid();
+  inline void clear_has_grid();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::pubsub::Pos* o_;
+  ::pubsub::Pos* r_;
+  ::std::string* grid_;
+  friend void  protobuf_AddDesc_info_2eproto();
+  friend void protobuf_AssignDesc_info_2eproto();
+  friend void protobuf_ShutdownFile_info_2eproto();
+
+  void InitAsDefaultInstance();
+  static GridInfo* default_instance_;
 };
 // ===================================================================
 
@@ -1011,6 +1210,220 @@ inline ::google::protobuf::RepeatedPtrField< ::pubsub::RoomInfo >*
 ShowInfo::mutable_ri() {
   // @@protoc_insertion_point(field_mutable_list:pubsub.ShowInfo.ri)
   return &ri_;
+}
+
+// -------------------------------------------------------------------
+
+// Pos
+
+// required int32 x = 1;
+inline bool Pos::has_x() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void Pos::set_has_x() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void Pos::clear_has_x() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void Pos::clear_x() {
+  x_ = 0;
+  clear_has_x();
+}
+inline ::google::protobuf::int32 Pos::x() const {
+  // @@protoc_insertion_point(field_get:pubsub.Pos.x)
+  return x_;
+}
+inline void Pos::set_x(::google::protobuf::int32 value) {
+  set_has_x();
+  x_ = value;
+  // @@protoc_insertion_point(field_set:pubsub.Pos.x)
+}
+
+// required int32 y = 2;
+inline bool Pos::has_y() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void Pos::set_has_y() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void Pos::clear_has_y() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void Pos::clear_y() {
+  y_ = 0;
+  clear_has_y();
+}
+inline ::google::protobuf::int32 Pos::y() const {
+  // @@protoc_insertion_point(field_get:pubsub.Pos.y)
+  return y_;
+}
+inline void Pos::set_y(::google::protobuf::int32 value) {
+  set_has_y();
+  y_ = value;
+  // @@protoc_insertion_point(field_set:pubsub.Pos.y)
+}
+
+// -------------------------------------------------------------------
+
+// GridInfo
+
+// required .pubsub.Pos o = 1;
+inline bool GridInfo::has_o() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void GridInfo::set_has_o() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void GridInfo::clear_has_o() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void GridInfo::clear_o() {
+  if (o_ != NULL) o_->::pubsub::Pos::Clear();
+  clear_has_o();
+}
+inline const ::pubsub::Pos& GridInfo::o() const {
+  // @@protoc_insertion_point(field_get:pubsub.GridInfo.o)
+  return o_ != NULL ? *o_ : *default_instance_->o_;
+}
+inline ::pubsub::Pos* GridInfo::mutable_o() {
+  set_has_o();
+  if (o_ == NULL) o_ = new ::pubsub::Pos;
+  // @@protoc_insertion_point(field_mutable:pubsub.GridInfo.o)
+  return o_;
+}
+inline ::pubsub::Pos* GridInfo::release_o() {
+  clear_has_o();
+  ::pubsub::Pos* temp = o_;
+  o_ = NULL;
+  return temp;
+}
+inline void GridInfo::set_allocated_o(::pubsub::Pos* o) {
+  delete o_;
+  o_ = o;
+  if (o) {
+    set_has_o();
+  } else {
+    clear_has_o();
+  }
+  // @@protoc_insertion_point(field_set_allocated:pubsub.GridInfo.o)
+}
+
+// required .pubsub.Pos r = 2;
+inline bool GridInfo::has_r() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void GridInfo::set_has_r() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void GridInfo::clear_has_r() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void GridInfo::clear_r() {
+  if (r_ != NULL) r_->::pubsub::Pos::Clear();
+  clear_has_r();
+}
+inline const ::pubsub::Pos& GridInfo::r() const {
+  // @@protoc_insertion_point(field_get:pubsub.GridInfo.r)
+  return r_ != NULL ? *r_ : *default_instance_->r_;
+}
+inline ::pubsub::Pos* GridInfo::mutable_r() {
+  set_has_r();
+  if (r_ == NULL) r_ = new ::pubsub::Pos;
+  // @@protoc_insertion_point(field_mutable:pubsub.GridInfo.r)
+  return r_;
+}
+inline ::pubsub::Pos* GridInfo::release_r() {
+  clear_has_r();
+  ::pubsub::Pos* temp = r_;
+  r_ = NULL;
+  return temp;
+}
+inline void GridInfo::set_allocated_r(::pubsub::Pos* r) {
+  delete r_;
+  r_ = r;
+  if (r) {
+    set_has_r();
+  } else {
+    clear_has_r();
+  }
+  // @@protoc_insertion_point(field_set_allocated:pubsub.GridInfo.r)
+}
+
+// required string grid = 3;
+inline bool GridInfo::has_grid() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void GridInfo::set_has_grid() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void GridInfo::clear_has_grid() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void GridInfo::clear_grid() {
+  if (grid_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    grid_->clear();
+  }
+  clear_has_grid();
+}
+inline const ::std::string& GridInfo::grid() const {
+  // @@protoc_insertion_point(field_get:pubsub.GridInfo.grid)
+  return *grid_;
+}
+inline void GridInfo::set_grid(const ::std::string& value) {
+  set_has_grid();
+  if (grid_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    grid_ = new ::std::string;
+  }
+  grid_->assign(value);
+  // @@protoc_insertion_point(field_set:pubsub.GridInfo.grid)
+}
+inline void GridInfo::set_grid(const char* value) {
+  set_has_grid();
+  if (grid_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    grid_ = new ::std::string;
+  }
+  grid_->assign(value);
+  // @@protoc_insertion_point(field_set_char:pubsub.GridInfo.grid)
+}
+inline void GridInfo::set_grid(const char* value, size_t size) {
+  set_has_grid();
+  if (grid_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    grid_ = new ::std::string;
+  }
+  grid_->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:pubsub.GridInfo.grid)
+}
+inline ::std::string* GridInfo::mutable_grid() {
+  set_has_grid();
+  if (grid_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    grid_ = new ::std::string;
+  }
+  // @@protoc_insertion_point(field_mutable:pubsub.GridInfo.grid)
+  return grid_;
+}
+inline ::std::string* GridInfo::release_grid() {
+  clear_has_grid();
+  if (grid_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    return NULL;
+  } else {
+    ::std::string* temp = grid_;
+    grid_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    return temp;
+  }
+}
+inline void GridInfo::set_allocated_grid(::std::string* grid) {
+  if (grid_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    delete grid_;
+  }
+  if (grid) {
+    set_has_grid();
+    grid_ = grid;
+  } else {
+    clear_has_grid();
+    grid_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  // @@protoc_insertion_point(field_set_allocated:pubsub.GridInfo.grid)
 }
 
 

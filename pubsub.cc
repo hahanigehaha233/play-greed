@@ -9,6 +9,10 @@ using namespace muduo;
 using namespace muduo::net;
 using namespace pubsub;
 
+#define ME '@'
+#define RIVAL '#'
+
+
 void onUnknownMessage(const TcpConnectionPtr& conn, const MessagePtr& message, Timestamp)
 {
     LOG_INFO << "onUnknownMessage: " << message->GetTypeName() << message->DebugString();
@@ -23,10 +27,29 @@ PubsubClient::PubsubClient(EventLoop* loop,
     dispatcher_.registerMessageCallback<pubsub::SystemAns>(
         std::bind(&PubsubClient::onSystemAns, this, _1, _2, _3));
     dispatcher_.registerMessageCallback<pubsub::ShowInfo>(std::bind(&PubsubClient::onRoomInfo,this,_1,_2,_3));
+    dispatcher_.registerMessageCallback<pubsub::GridInfo>(std::bind(&PubsubClient::onGridInfo,this,_1,_2,_3));
     client_.setConnectionCallback(
         std::bind(&PubsubClient::onConnection, this, _1));
     client_.setMessageCallback(
         std::bind(&ProtobufCodec::onMessage,&codec_,_1,_2,_3));
+    if (has_colors()) {
+        start_color();
+        init_pair(1, COLOR_YELLOW, COLOR_BLACK);
+        init_pair(2, COLOR_RED, COLOR_BLACK);
+        init_pair(3, COLOR_GREEN, COLOR_BLACK);
+        init_pair(4, COLOR_CYAN, COLOR_BLACK);	
+        init_pair(5, COLOR_MAGENTA, COLOR_BLACK);
+
+        attribs[0] = COLOR_PAIR(1);
+        attribs[1] = COLOR_PAIR(2);
+        attribs[2] = COLOR_PAIR(3);
+        attribs[3] = COLOR_PAIR(4);
+        attribs[4] = COLOR_PAIR(5);
+        attribs[5] = COLOR_PAIR(1) | A_BOLD;
+        attribs[6] = COLOR_PAIR(2) | A_BOLD;
+        attribs[7] = COLOR_PAIR(3) | A_BOLD;
+        attribs[8] = COLOR_PAIR(4) | A_BOLD;
+    }
 }
 
 
@@ -67,7 +90,34 @@ void PubsubClient::showRoomInfo(const ShowRoomInfoPtr& message)
     move(LINES - 1,0);
     refresh();
 }
-
+void PubsubClient::onGridInfo(const TcpConnectionPtr& conn, const GridInfoPtr& message, Timestamp)
+{
+    string grid = message->grid();
+    int c = 0;
+    attron(A_BOLD);
+    for(int i = 0;i < 19;++i){
+        for(int j = 0;j < 80;++j,++c){
+            if(grid[c] - '0' == 0){
+                continue;
+            }
+            attron(attribs[grid[c] - '0']);
+            mvaddch(i+3,j, grid[c]);
+            attroff(attribs[grid[c] - '0']);
+        }
+    }
+    attroff(A_BOLD);
+    //addstr(grid.c_str());
+    pubsub::Pos o = message->o();
+    attron(A_BLINK);
+    mvaddch(o.x() + 3, o.y(), ME);
+    attroff(A_BLINK);
+    pubsub::Pos r = message->r();
+    attron(A_REVERSE);
+    mvaddch(r.x() + 3,r.y(),RIVAL);
+    attroff(A_REVERSE);
+    move(LINES - 1,0);
+    refresh();
+}
 void PubsubClient::onRoomInfo(const TcpConnectionPtr& conn, const ShowRoomInfoPtr& message, Timestamp)
 {
     showRoomInfo(message);
