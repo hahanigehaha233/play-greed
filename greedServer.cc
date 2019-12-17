@@ -62,8 +62,8 @@ private:
 class Topic:public muduo::copyable
 {
 public:
-    Topic(const string &topic,const string &onwer)
-        : topic_(topic),onwer_(onwer)
+    Topic(const string &topic,const string &onwer, const Timestamp& createdTime)
+        : topic_(topic),onwer_(onwer),createdTime_(createdTime)
     {
     }
 
@@ -154,7 +154,7 @@ public:
             return false;
         }
     }
-
+public: Timestamp createdTime_;
 private:
     string makeSysMessage()
     {
@@ -251,11 +251,48 @@ private:
                 codec_.send(conn, *MessageToSend_);
             }
         }
-        else if (cmd == "unsub")
+        else if (cmd == "quit")//unsub
         {
-            doUnsubscribe(conn, topic);
+            if((user.getclientType() == cRival || user.getclientType() == cSubscribe) && topic == user.getTopic())
+            {
+                LOG_INFO << conn->name() << " getout " << topic;
+                getTopic(user.getTopic()).setRivalEmpty();
+                doUnsubscribe(conn, topic);
+            }
+            else if(user.getclientType() == cOwner)
+            {
+                LOG_INFO << conn->name() << " remove topic: " << topic;
+                Timestamp now = Timestamp::now();
+                doPublish(conn->name(),user.getTopic(),"Owner delete room, you become tourist.",now);
+                getTopic(user.getTopic()).userUnsubscribe();
+                topics_.erase(user.getTopic());
+            }
+            else
+            {
+                ans.set_content("you are not in room or this room name is wrong");
+                MessageToSend_ = &ans;
+                codec_.send(conn, *MessageToSend_);
+            }
+            user.setclientTourist();
         }
-        else if (cmd == "sub")
+        else if (cmd == "show")
+        {
+            auto it = topics_.begin();
+            int count = topics_.size();
+            pubsub::ShowInfo sif;
+            int i = 0;
+            for(;it != topics_.end();++it)
+            {
+                pubsub::RoomInfo * tri = sif.add_ri();
+                tri->set_createdtime(getTopic(it->first).createdTime_.toFormattedString());
+                tri->set_name(getTopic(it->first).getTopicName());
+                tri->set_owner(getTopic(it->first).getOwner());
+                tri->set_rival(getTopic(it->first).getRival());
+            }
+            google::protobuf::Message* MessageToSend = &sif;
+            codec_.send(conn,*MessageToSend);
+        }
+        else if (cmd == "watch")//sub
         {
             if(user.getclientType() == cTourist)
             {
@@ -272,7 +309,10 @@ private:
         }
         else
         {
-            conn->shutdown();
+            ans.set_content("unknow cmd");
+            MessageToSend_ = &ans;
+            codec_.send(conn, *MessageToSend_);
+            //conn->shutdown();
         }
     }
     void onConnection(const TcpConnectionPtr &conn)
@@ -287,6 +327,7 @@ private:
             removeUser(conn);
         }
     }
+
 
     void removeUser(const TcpConnectionPtr& conn)
     {
@@ -310,7 +351,79 @@ private:
         }
         users_.erase(conn->name());
     }
-    // void onMessage(const TcpConnectionPtr &conn,
+
+    void timePublish()
+    {
+        Timestamp now = Timestamp::now();
+        doPublish("internal", "utc_time", now.toFormattedString(), now);
+    }
+
+    void doSubscribe(const TcpConnectionPtr &conn,
+                     const string &topic)
+    {
+        ConnectionSubscription *connSub = boost::any_cast<ConnectionSubscription>(conn->getMutableContext());
+        connSub->insert(topic);
+        getTopic(topic).add(getClientInfo(conn->name()));
+    }
+
+    void doUnsubscribe(const TcpConnectionPtr &conn,
+                       const string &topic)
+    {
+        LOG_INFO << conn->name() << " unsubscribes " << topic;
+        getTopic(topic).remove(getClientInfo(conn->name()));
+        // topic could be the one to be destroyed, so don't use it after erasing.
+        ConnectionSubscription *connSub = boost::any_cast<ConnectionSubscription>(conn->getMutableContext());
+        connSub->erase(topic);
+    }
+
+    void doPublish(const string &source,
+                   const string &topic,
+                   const string &content,
+                   Timestamp time)
+    {
+        getTopic(topic).publish(content, time, codec_);
+    }
+    bool hasnoTopic(const string &topic)
+    {
+        std::map<string, std::shared_ptr<Topic>>::iterator it = topics_.find(topic);
+        return (it == topics_.end());
+    }
+    bool createTopic(const string &topic,const string& onwer)
+    {
+        Timestamp now = Timestamp::now();
+        std::pair<std::map<string, std::shared_ptr<Topic>>::iterator, bool> res = topics_.insert(std::pair<string, std::shared_ptr<Topic>>(topic, std::make_shared<Topic>(topic,onwer,now)));
+        return res.second;
+    }
+    bool createUser(const TcpConnectionPtr &conn)
+    {
+        std::pair<std::map<string,std::shared_ptr<ClientInfo>>::iterator,bool> res = users_.insert(std::pair<string, std::shared_ptr<ClientInfo>>(conn->name(),std::make_shared<ClientInfo>(conn)));
+        return res.second;
+    }
+    bool setRival(const string &topic, const string& connName)
+    {
+        return getTopic(topic).setRival(connName);
+    }
+
+    Topic &getTopic(const string &topic)
+    {
+        std::map<string, std::shared_ptr<Topic>>::iterator it = topics_.find(topic);
+        return (*it->second);
+    }
+
+    std::shared_ptr<ClientInfo> &getClientInfo(const string& name)
+    {
+        std::map<string,std::shared_ptr<ClientInfo>>::iterator it = users_.find(name);
+        return it->second;
+    }
+
+    EventLoop *loop_;
+    TcpServer server_;
+    std::map<string, std::shared_ptr<Topic>> topics_;
+    std::map<string,std::shared_ptr<ClientInfo>> users_;
+    ProtobufDispatcher dispatcher_;
+    ProtobufCodec codec_;
+
+        // void onMessage(const TcpConnectionPtr &conn,
     //                Buffer *buf,
     //                Timestamp receiveTime)
     // {
@@ -392,76 +505,6 @@ private:
     //         }
     //     }
     // }
-
-    void timePublish()
-    {
-        Timestamp now = Timestamp::now();
-        doPublish("internal", "utc_time", now.toFormattedString(), now);
-    }
-
-    void doSubscribe(const TcpConnectionPtr &conn,
-                     const string &topic)
-    {
-        ConnectionSubscription *connSub = boost::any_cast<ConnectionSubscription>(conn->getMutableContext());
-        connSub->insert(topic);
-        getTopic(topic).add(getClientInfo(conn->name()));
-    }
-
-    void doUnsubscribe(const TcpConnectionPtr &conn,
-                       const string &topic)
-    {
-        LOG_INFO << conn->name() << " unsubscribes " << topic;
-        getTopic(topic).remove(getClientInfo(conn->name()));
-        // topic could be the one to be destroyed, so don't use it after erasing.
-        ConnectionSubscription *connSub = boost::any_cast<ConnectionSubscription>(conn->getMutableContext());
-        connSub->erase(topic);
-    }
-
-    void doPublish(const string &source,
-                   const string &topic,
-                   const string &content,
-                   Timestamp time)
-    {
-        getTopic(topic).publish(content, time, codec_);
-    }
-    bool hasnoTopic(const string &topic)
-    {
-        std::map<string, std::shared_ptr<Topic>>::iterator it = topics_.find(topic);
-        return (it == topics_.end());
-    }
-    bool createTopic(const string &topic,const string& onwer)
-    {
-        std::pair<std::map<string, std::shared_ptr<Topic>>::iterator, bool> res = topics_.insert(std::pair<string, std::shared_ptr<Topic>>(topic, std::make_shared<Topic>(topic,onwer)));
-        return res.second;
-    }
-    bool createUser(const TcpConnectionPtr &conn)
-    {
-        std::pair<std::map<string,std::shared_ptr<ClientInfo>>::iterator,bool> res = users_.insert(std::pair<string, std::shared_ptr<ClientInfo>>(conn->name(),std::make_shared<ClientInfo>(conn)));
-        return res.second;
-    }
-    bool setRival(const string &topic, const string& connName)
-    {
-        return getTopic(topic).setRival(connName);
-    }
-
-    Topic &getTopic(const string &topic)
-    {
-        std::map<string, std::shared_ptr<Topic>>::iterator it = topics_.find(topic);
-        return (*it->second);
-    }
-
-    std::shared_ptr<ClientInfo> &getClientInfo(const string& name)
-    {
-        std::map<string,std::shared_ptr<ClientInfo>>::iterator it = users_.find(name);
-        return it->second;
-    }
-
-    EventLoop *loop_;
-    TcpServer server_;
-    std::map<string, std::shared_ptr<Topic>> topics_;
-    std::map<string,std::shared_ptr<ClientInfo>> users_;
-    ProtobufDispatcher dispatcher_;
-    ProtobufCodec codec_;
 };
 
 }// namespace pubsub

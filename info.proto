@@ -1,0 +1,23 @@
+package pubsub;
+
+message SystemQuery {
+    //required int64 id = 1;
+    required string cmd = 2;
+    optional string topic = 3;
+}
+
+message SystemAns {
+   // required int64 id = 1;
+    required string content = 2;
+}
+
+message RoomInfo {
+    required string name = 1;
+    required string createdTime = 2;
+    required string owner = 3;
+    optional string rival = 4;
+}
+
+message ShowInfo {
+    repeated RoomInfo ri = 1;
+}

@@ -35,6 +35,8 @@ void protobuf_ShutdownFile_info_2eproto();
 
 class SystemQuery;
 class SystemAns;
+class RoomInfo;
+class ShowInfo;
 
 // ===================================================================
 
@@ -103,7 +105,7 @@ class SystemQuery : public ::google::protobuf::Message {
   inline ::std::string* release_cmd();
   inline void set_allocated_cmd(::std::string* cmd);
 
-  // required string topic = 3;
+  // optional string topic = 3;
   inline bool has_topic() const;
   inline void clear_topic();
   static const int kTopicFieldNumber = 3;
@@ -219,6 +221,217 @@ class SystemAns : public ::google::protobuf::Message {
   void InitAsDefaultInstance();
   static SystemAns* default_instance_;
 };
+// -------------------------------------------------------------------
+
+class RoomInfo : public ::google::protobuf::Message {
+ public:
+  RoomInfo();
+  virtual ~RoomInfo();
+
+  RoomInfo(const RoomInfo& from);
+
+  inline RoomInfo& operator=(const RoomInfo& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const RoomInfo& default_instance();
+
+  void Swap(RoomInfo* other);
+
+  // implements Message ----------------------------------------------
+
+  RoomInfo* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const RoomInfo& from);
+  void MergeFrom(const RoomInfo& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required string name = 1;
+  inline bool has_name() const;
+  inline void clear_name();
+  static const int kNameFieldNumber = 1;
+  inline const ::std::string& name() const;
+  inline void set_name(const ::std::string& value);
+  inline void set_name(const char* value);
+  inline void set_name(const char* value, size_t size);
+  inline ::std::string* mutable_name();
+  inline ::std::string* release_name();
+  inline void set_allocated_name(::std::string* name);
+
+  // required string createdTime = 2;
+  inline bool has_createdtime() const;
+  inline void clear_createdtime();
+  static const int kCreatedTimeFieldNumber = 2;
+  inline const ::std::string& createdtime() const;
+  inline void set_createdtime(const ::std::string& value);
+  inline void set_createdtime(const char* value);
+  inline void set_createdtime(const char* value, size_t size);
+  inline ::std::string* mutable_createdtime();
+  inline ::std::string* release_createdtime();
+  inline void set_allocated_createdtime(::std::string* createdtime);
+
+  // required string owner = 3;
+  inline bool has_owner() const;
+  inline void clear_owner();
+  static const int kOwnerFieldNumber = 3;
+  inline const ::std::string& owner() const;
+  inline void set_owner(const ::std::string& value);
+  inline void set_owner(const char* value);
+  inline void set_owner(const char* value, size_t size);
+  inline ::std::string* mutable_owner();
+  inline ::std::string* release_owner();
+  inline void set_allocated_owner(::std::string* owner);
+
+  // optional string rival = 4;
+  inline bool has_rival() const;
+  inline void clear_rival();
+  static const int kRivalFieldNumber = 4;
+  inline const ::std::string& rival() const;
+  inline void set_rival(const ::std::string& value);
+  inline void set_rival(const char* value);
+  inline void set_rival(const char* value, size_t size);
+  inline ::std::string* mutable_rival();
+  inline ::std::string* release_rival();
+  inline void set_allocated_rival(::std::string* rival);
+
+  // @@protoc_insertion_point(class_scope:pubsub.RoomInfo)
+ private:
+  inline void set_has_name();
+  inline void clear_has_name();
+  inline void set_has_createdtime();
+  inline void clear_has_createdtime();
+  inline void set_has_owner();
+  inline void clear_has_owner();
+  inline void set_has_rival();
+  inline void clear_has_rival();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::std::string* name_;
+  ::std::string* createdtime_;
+  ::std::string* owner_;
+  ::std::string* rival_;
+  friend void  protobuf_AddDesc_info_2eproto();
+  friend void protobuf_AssignDesc_info_2eproto();
+  friend void protobuf_ShutdownFile_info_2eproto();
+
+  void InitAsDefaultInstance();
+  static RoomInfo* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class ShowInfo : public ::google::protobuf::Message {
+ public:
+  ShowInfo();
+  virtual ~ShowInfo();
+
+  ShowInfo(const ShowInfo& from);
+
+  inline ShowInfo& operator=(const ShowInfo& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const ShowInfo& default_instance();
+
+  void Swap(ShowInfo* other);
+
+  // implements Message ----------------------------------------------
+
+  ShowInfo* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const ShowInfo& from);
+  void MergeFrom(const ShowInfo& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // repeated .pubsub.RoomInfo ri = 1;
+  inline int ri_size() const;
+  inline void clear_ri();
+  static const int kRiFieldNumber = 1;
+  inline const ::pubsub::RoomInfo& ri(int index) const;
+  inline ::pubsub::RoomInfo* mutable_ri(int index);
+  inline ::pubsub::RoomInfo* add_ri();
+  inline const ::google::protobuf::RepeatedPtrField< ::pubsub::RoomInfo >&
+      ri() const;
+  inline ::google::protobuf::RepeatedPtrField< ::pubsub::RoomInfo >*
+      mutable_ri();
+
+  // @@protoc_insertion_point(class_scope:pubsub.ShowInfo)
+ private:
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::google::protobuf::RepeatedPtrField< ::pubsub::RoomInfo > ri_;
+  friend void  protobuf_AddDesc_info_2eproto();
+  friend void protobuf_AssignDesc_info_2eproto();
+  friend void protobuf_ShutdownFile_info_2eproto();
+
+  void InitAsDefaultInstance();
+  static ShowInfo* default_instance_;
+};
 // ===================================================================
 
 
@@ -302,7 +515,7 @@ inline void SystemQuery::set_allocated_cmd(::std::string* cmd) {
   // @@protoc_insertion_point(field_set_allocated:pubsub.SystemQuery.cmd)
 }
 
-// required string topic = 3;
+// optional string topic = 3;
 inline bool SystemQuery::has_topic() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
@@ -456,6 +669,348 @@ inline void SystemAns::set_allocated_content(::std::string* content) {
     content_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   }
   // @@protoc_insertion_point(field_set_allocated:pubsub.SystemAns.content)
+}
+
+// -------------------------------------------------------------------
+
+// RoomInfo
+
+// required string name = 1;
+inline bool RoomInfo::has_name() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void RoomInfo::set_has_name() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void RoomInfo::clear_has_name() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void RoomInfo::clear_name() {
+  if (name_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    name_->clear();
+  }
+  clear_has_name();
+}
+inline const ::std::string& RoomInfo::name() const {
+  // @@protoc_insertion_point(field_get:pubsub.RoomInfo.name)
+  return *name_;
+}
+inline void RoomInfo::set_name(const ::std::string& value) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    name_ = new ::std::string;
+  }
+  name_->assign(value);
+  // @@protoc_insertion_point(field_set:pubsub.RoomInfo.name)
+}
+inline void RoomInfo::set_name(const char* value) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    name_ = new ::std::string;
+  }
+  name_->assign(value);
+  // @@protoc_insertion_point(field_set_char:pubsub.RoomInfo.name)
+}
+inline void RoomInfo::set_name(const char* value, size_t size) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    name_ = new ::std::string;
+  }
+  name_->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:pubsub.RoomInfo.name)
+}
+inline ::std::string* RoomInfo::mutable_name() {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    name_ = new ::std::string;
+  }
+  // @@protoc_insertion_point(field_mutable:pubsub.RoomInfo.name)
+  return name_;
+}
+inline ::std::string* RoomInfo::release_name() {
+  clear_has_name();
+  if (name_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    return NULL;
+  } else {
+    ::std::string* temp = name_;
+    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    return temp;
+  }
+}
+inline void RoomInfo::set_allocated_name(::std::string* name) {
+  if (name_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    delete name_;
+  }
+  if (name) {
+    set_has_name();
+    name_ = name;
+  } else {
+    clear_has_name();
+    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  // @@protoc_insertion_point(field_set_allocated:pubsub.RoomInfo.name)
+}
+
+// required string createdTime = 2;
+inline bool RoomInfo::has_createdtime() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void RoomInfo::set_has_createdtime() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void RoomInfo::clear_has_createdtime() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void RoomInfo::clear_createdtime() {
+  if (createdtime_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    createdtime_->clear();
+  }
+  clear_has_createdtime();
+}
+inline const ::std::string& RoomInfo::createdtime() const {
+  // @@protoc_insertion_point(field_get:pubsub.RoomInfo.createdTime)
+  return *createdtime_;
+}
+inline void RoomInfo::set_createdtime(const ::std::string& value) {
+  set_has_createdtime();
+  if (createdtime_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    createdtime_ = new ::std::string;
+  }
+  createdtime_->assign(value);
+  // @@protoc_insertion_point(field_set:pubsub.RoomInfo.createdTime)
+}
+inline void RoomInfo::set_createdtime(const char* value) {
+  set_has_createdtime();
+  if (createdtime_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    createdtime_ = new ::std::string;
+  }
+  createdtime_->assign(value);
+  // @@protoc_insertion_point(field_set_char:pubsub.RoomInfo.createdTime)
+}
+inline void RoomInfo::set_createdtime(const char* value, size_t size) {
+  set_has_createdtime();
+  if (createdtime_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    createdtime_ = new ::std::string;
+  }
+  createdtime_->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:pubsub.RoomInfo.createdTime)
+}
+inline ::std::string* RoomInfo::mutable_createdtime() {
+  set_has_createdtime();
+  if (createdtime_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    createdtime_ = new ::std::string;
+  }
+  // @@protoc_insertion_point(field_mutable:pubsub.RoomInfo.createdTime)
+  return createdtime_;
+}
+inline ::std::string* RoomInfo::release_createdtime() {
+  clear_has_createdtime();
+  if (createdtime_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    return NULL;
+  } else {
+    ::std::string* temp = createdtime_;
+    createdtime_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    return temp;
+  }
+}
+inline void RoomInfo::set_allocated_createdtime(::std::string* createdtime) {
+  if (createdtime_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    delete createdtime_;
+  }
+  if (createdtime) {
+    set_has_createdtime();
+    createdtime_ = createdtime;
+  } else {
+    clear_has_createdtime();
+    createdtime_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  // @@protoc_insertion_point(field_set_allocated:pubsub.RoomInfo.createdTime)
+}
+
+// required string owner = 3;
+inline bool RoomInfo::has_owner() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void RoomInfo::set_has_owner() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void RoomInfo::clear_has_owner() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void RoomInfo::clear_owner() {
+  if (owner_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    owner_->clear();
+  }
+  clear_has_owner();
+}
+inline const ::std::string& RoomInfo::owner() const {
+  // @@protoc_insertion_point(field_get:pubsub.RoomInfo.owner)
+  return *owner_;
+}
+inline void RoomInfo::set_owner(const ::std::string& value) {
+  set_has_owner();
+  if (owner_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    owner_ = new ::std::string;
+  }
+  owner_->assign(value);
+  // @@protoc_insertion_point(field_set:pubsub.RoomInfo.owner)
+}
+inline void RoomInfo::set_owner(const char* value) {
+  set_has_owner();
+  if (owner_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    owner_ = new ::std::string;
+  }
+  owner_->assign(value);
+  // @@protoc_insertion_point(field_set_char:pubsub.RoomInfo.owner)
+}
+inline void RoomInfo::set_owner(const char* value, size_t size) {
+  set_has_owner();
+  if (owner_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    owner_ = new ::std::string;
+  }
+  owner_->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:pubsub.RoomInfo.owner)
+}
+inline ::std::string* RoomInfo::mutable_owner() {
+  set_has_owner();
+  if (owner_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    owner_ = new ::std::string;
+  }
+  // @@protoc_insertion_point(field_mutable:pubsub.RoomInfo.owner)
+  return owner_;
+}
+inline ::std::string* RoomInfo::release_owner() {
+  clear_has_owner();
+  if (owner_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    return NULL;
+  } else {
+    ::std::string* temp = owner_;
+    owner_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    return temp;
+  }
+}
+inline void RoomInfo::set_allocated_owner(::std::string* owner) {
+  if (owner_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    delete owner_;
+  }
+  if (owner) {
+    set_has_owner();
+    owner_ = owner;
+  } else {
+    clear_has_owner();
+    owner_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  // @@protoc_insertion_point(field_set_allocated:pubsub.RoomInfo.owner)
+}
+
+// optional string rival = 4;
+inline bool RoomInfo::has_rival() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void RoomInfo::set_has_rival() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void RoomInfo::clear_has_rival() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void RoomInfo::clear_rival() {
+  if (rival_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    rival_->clear();
+  }
+  clear_has_rival();
+}
+inline const ::std::string& RoomInfo::rival() const {
+  // @@protoc_insertion_point(field_get:pubsub.RoomInfo.rival)
+  return *rival_;
+}
+inline void RoomInfo::set_rival(const ::std::string& value) {
+  set_has_rival();
+  if (rival_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    rival_ = new ::std::string;
+  }
+  rival_->assign(value);
+  // @@protoc_insertion_point(field_set:pubsub.RoomInfo.rival)
+}
+inline void RoomInfo::set_rival(const char* value) {
+  set_has_rival();
+  if (rival_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    rival_ = new ::std::string;
+  }
+  rival_->assign(value);
+  // @@protoc_insertion_point(field_set_char:pubsub.RoomInfo.rival)
+}
+inline void RoomInfo::set_rival(const char* value, size_t size) {
+  set_has_rival();
+  if (rival_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    rival_ = new ::std::string;
+  }
+  rival_->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:pubsub.RoomInfo.rival)
+}
+inline ::std::string* RoomInfo::mutable_rival() {
+  set_has_rival();
+  if (rival_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    rival_ = new ::std::string;
+  }
+  // @@protoc_insertion_point(field_mutable:pubsub.RoomInfo.rival)
+  return rival_;
+}
+inline ::std::string* RoomInfo::release_rival() {
+  clear_has_rival();
+  if (rival_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    return NULL;
+  } else {
+    ::std::string* temp = rival_;
+    rival_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    return temp;
+  }
+}
+inline void RoomInfo::set_allocated_rival(::std::string* rival) {
+  if (rival_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    delete rival_;
+  }
+  if (rival) {
+    set_has_rival();
+    rival_ = rival;
+  } else {
+    clear_has_rival();
+    rival_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  // @@protoc_insertion_point(field_set_allocated:pubsub.RoomInfo.rival)
+}
+
+// -------------------------------------------------------------------
+
+// ShowInfo
+
+// repeated .pubsub.RoomInfo ri = 1;
+inline int ShowInfo::ri_size() const {
+  return ri_.size();
+}
+inline void ShowInfo::clear_ri() {
+  ri_.Clear();
+}
+inline const ::pubsub::RoomInfo& ShowInfo::ri(int index) const {
+  // @@protoc_insertion_point(field_get:pubsub.ShowInfo.ri)
+  return ri_.Get(index);
+}
+inline ::pubsub::RoomInfo* ShowInfo::mutable_ri(int index) {
+  // @@protoc_insertion_point(field_mutable:pubsub.ShowInfo.ri)
+  return ri_.Mutable(index);
+}
+inline ::pubsub::RoomInfo* ShowInfo::add_ri() {
+  // @@protoc_insertion_point(field_add:pubsub.ShowInfo.ri)
+  return ri_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::pubsub::RoomInfo >&
+ShowInfo::ri() const {
+  // @@protoc_insertion_point(field_list:pubsub.ShowInfo.ri)
+  return ri_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::pubsub::RoomInfo >*
+ShowInfo::mutable_ri() {
+  // @@protoc_insertion_point(field_mutable_list:pubsub.ShowInfo.ri)
+  return &ri_;
 }
 
 

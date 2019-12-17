@@ -11,6 +11,7 @@ namespace pubsub
 {
 using muduo::string;
 typedef std::shared_ptr<pubsub::SystemAns> SystemAnsPtr;
+typedef std::shared_ptr<pubsub::ShowInfo> ShowRoomInfoPtr;
 
 class PubsubClient{
 public:
@@ -29,7 +30,10 @@ public:
     bool connected() const;
 
     bool messageTest(const string& topic);
-    int dealCmd(const string& cmd, const string& topic);
+    //int dealCmd(const string& cmd, const string& topic);
+    int dealCmd(char* s);
+    void printError(const string& str);
+    void showRoomInfo(const ShowRoomInfoPtr& message);
     bool subscribe(const string& topic);
     void unsubscribe(const string& topic);
     bool publish(const string& topic, const string& content);
@@ -40,6 +44,7 @@ public:
     }
     //void onUnknownMessage(const  muduo::net::TcpConnectionPtr& conn, const MessagePtr& message, muduo::Timestamp);
     void onSystemAns(const muduo::net::TcpConnectionPtr& conn, const SystemAnsPtr& message, muduo::Timestamp);
+    void onRoomInfo(const muduo::net::TcpConnectionPtr& conn, const ShowRoomInfoPtr& message, muduo::Timestamp);
 
 private:
     /// conn change

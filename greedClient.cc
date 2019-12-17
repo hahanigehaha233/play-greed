@@ -55,14 +55,16 @@ void connection(PubsubClient* client)
 void printStr(char* s)
 {
   clear();
-  move(10,20);
+  move(LINES-2,0);
   addstr(s);
   refresh();
 }
 int main(int argc, char* argv[])
 {
-    //initscr();
-    //Logger::setLogLevel(Logger::ERROR);
+    initscr();
+    start_color();
+    
+    Logger::setLogLevel(Logger::ERROR);
     if(argc == 2)
     {
         string hostport = argv[1];
@@ -79,14 +81,18 @@ int main(int argc, char* argv[])
             InetAddress InetAddress(hostip, port);
             PubsubClient client(g_loop, InetAddress, name);
             client.start();
-            //char* s = new char[50];
+            char* s = new char[50];
+            string line;
             while (true)
             {
-                //move(LINES-1,0);
-                //getstr(s);
+                move(LINES-1,0);
+                getstr(s);
+                clrtoeol();
+                move(LINES -2,0);
+                clrtoeol();
                 //printStr(s);
-                std::cin>>g_cmd>>g_topic;
-                client.dealCmd(g_cmd, g_topic);
+                //std::cin>>g_cmd>>g_topic;
+                client.dealCmd(s);
             }
             client.stop();
             CurrentThread::sleepUsec(1000*1000);
