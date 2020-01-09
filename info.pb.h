@@ -39,6 +39,9 @@ class RoomInfo;
 class ShowInfo;
 class Pos;
 class GridInfo;
+class boardQuery;
+class boardAns;
+class finalInfo;
 
 // ===================================================================
 
@@ -194,6 +197,13 @@ class SystemAns : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
+  // required int32 id = 1;
+  inline bool has_id() const;
+  inline void clear_id();
+  static const int kIdFieldNumber = 1;
+  inline ::google::protobuf::int32 id() const;
+  inline void set_id(::google::protobuf::int32 value);
+
   // required string content = 2;
   inline bool has_content() const;
   inline void clear_content();
@@ -208,6 +218,8 @@ class SystemAns : public ::google::protobuf::Message {
 
   // @@protoc_insertion_point(class_scope:pubsub.SystemAns)
  private:
+  inline void set_has_id();
+  inline void clear_has_id();
   inline void set_has_content();
   inline void clear_has_content();
 
@@ -216,6 +228,7 @@ class SystemAns : public ::google::protobuf::Message {
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
   ::std::string* content_;
+  ::google::protobuf::int32 id_;
   friend void  protobuf_AddDesc_info_2eproto();
   friend void protobuf_AssignDesc_info_2eproto();
   friend void protobuf_ShutdownFile_info_2eproto();
@@ -608,6 +621,60 @@ class GridInfo : public ::google::protobuf::Message {
   inline ::std::string* release_grid();
   inline void set_allocated_grid(::std::string* grid);
 
+  // required int64 type = 4;
+  inline bool has_type() const;
+  inline void clear_type();
+  static const int kTypeFieldNumber = 4;
+  inline ::google::protobuf::int64 type() const;
+  inline void set_type(::google::protobuf::int64 value);
+
+  // required string topic = 5;
+  inline bool has_topic() const;
+  inline void clear_topic();
+  static const int kTopicFieldNumber = 5;
+  inline const ::std::string& topic() const;
+  inline void set_topic(const ::std::string& value);
+  inline void set_topic(const char* value);
+  inline void set_topic(const char* value, size_t size);
+  inline ::std::string* mutable_topic();
+  inline ::std::string* release_topic();
+  inline void set_allocated_topic(::std::string* topic);
+
+  // required int64 ownerScore = 6;
+  inline bool has_ownerscore() const;
+  inline void clear_ownerscore();
+  static const int kOwnerScoreFieldNumber = 6;
+  inline ::google::protobuf::int64 ownerscore() const;
+  inline void set_ownerscore(::google::protobuf::int64 value);
+
+  // required int64 rivalScore = 7;
+  inline bool has_rivalscore() const;
+  inline void clear_rivalscore();
+  static const int kRivalScoreFieldNumber = 7;
+  inline ::google::protobuf::int64 rivalscore() const;
+  inline void set_rivalscore(::google::protobuf::int64 value);
+
+  // required bool isownertune = 8;
+  inline bool has_isownertune() const;
+  inline void clear_isownertune();
+  static const int kIsownertuneFieldNumber = 8;
+  inline bool isownertune() const;
+  inline void set_isownertune(bool value);
+
+  // required bool ownercanmove = 9;
+  inline bool has_ownercanmove() const;
+  inline void clear_ownercanmove();
+  static const int kOwnercanmoveFieldNumber = 9;
+  inline bool ownercanmove() const;
+  inline void set_ownercanmove(bool value);
+
+  // required bool rivalcanmove = 10;
+  inline bool has_rivalcanmove() const;
+  inline void clear_rivalcanmove();
+  static const int kRivalcanmoveFieldNumber = 10;
+  inline bool rivalcanmove() const;
+  inline void set_rivalcanmove(bool value);
+
   // @@protoc_insertion_point(class_scope:pubsub.GridInfo)
  private:
   inline void set_has_o();
@@ -616,6 +683,20 @@ class GridInfo : public ::google::protobuf::Message {
   inline void clear_has_r();
   inline void set_has_grid();
   inline void clear_has_grid();
+  inline void set_has_type();
+  inline void clear_has_type();
+  inline void set_has_topic();
+  inline void clear_has_topic();
+  inline void set_has_ownerscore();
+  inline void clear_has_ownerscore();
+  inline void set_has_rivalscore();
+  inline void clear_has_rivalscore();
+  inline void set_has_isownertune();
+  inline void clear_has_isownertune();
+  inline void set_has_ownercanmove();
+  inline void clear_has_ownercanmove();
+  inline void set_has_rivalcanmove();
+  inline void clear_has_rivalcanmove();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -624,12 +705,305 @@ class GridInfo : public ::google::protobuf::Message {
   ::pubsub::Pos* o_;
   ::pubsub::Pos* r_;
   ::std::string* grid_;
+  ::google::protobuf::int64 type_;
+  ::std::string* topic_;
+  ::google::protobuf::int64 ownerscore_;
+  ::google::protobuf::int64 rivalscore_;
+  bool isownertune_;
+  bool ownercanmove_;
+  bool rivalcanmove_;
   friend void  protobuf_AddDesc_info_2eproto();
   friend void protobuf_AssignDesc_info_2eproto();
   friend void protobuf_ShutdownFile_info_2eproto();
 
   void InitAsDefaultInstance();
   static GridInfo* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class boardQuery : public ::google::protobuf::Message {
+ public:
+  boardQuery();
+  virtual ~boardQuery();
+
+  boardQuery(const boardQuery& from);
+
+  inline boardQuery& operator=(const boardQuery& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const boardQuery& default_instance();
+
+  void Swap(boardQuery* other);
+
+  // implements Message ----------------------------------------------
+
+  boardQuery* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const boardQuery& from);
+  void MergeFrom(const boardQuery& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required .pubsub.Pos x = 1;
+  inline bool has_x() const;
+  inline void clear_x();
+  static const int kXFieldNumber = 1;
+  inline const ::pubsub::Pos& x() const;
+  inline ::pubsub::Pos* mutable_x();
+  inline ::pubsub::Pos* release_x();
+  inline void set_allocated_x(::pubsub::Pos* x);
+
+  // required int64 type = 2;
+  inline bool has_type() const;
+  inline void clear_type();
+  static const int kTypeFieldNumber = 2;
+  inline ::google::protobuf::int64 type() const;
+  inline void set_type(::google::protobuf::int64 value);
+
+  // required string topic = 3;
+  inline bool has_topic() const;
+  inline void clear_topic();
+  static const int kTopicFieldNumber = 3;
+  inline const ::std::string& topic() const;
+  inline void set_topic(const ::std::string& value);
+  inline void set_topic(const char* value);
+  inline void set_topic(const char* value, size_t size);
+  inline ::std::string* mutable_topic();
+  inline ::std::string* release_topic();
+  inline void set_allocated_topic(::std::string* topic);
+
+  // @@protoc_insertion_point(class_scope:pubsub.boardQuery)
+ private:
+  inline void set_has_x();
+  inline void clear_has_x();
+  inline void set_has_type();
+  inline void clear_has_type();
+  inline void set_has_topic();
+  inline void clear_has_topic();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::pubsub::Pos* x_;
+  ::google::protobuf::int64 type_;
+  ::std::string* topic_;
+  friend void  protobuf_AddDesc_info_2eproto();
+  friend void protobuf_AssignDesc_info_2eproto();
+  friend void protobuf_ShutdownFile_info_2eproto();
+
+  void InitAsDefaultInstance();
+  static boardQuery* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class boardAns : public ::google::protobuf::Message {
+ public:
+  boardAns();
+  virtual ~boardAns();
+
+  boardAns(const boardAns& from);
+
+  inline boardAns& operator=(const boardAns& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const boardAns& default_instance();
+
+  void Swap(boardAns* other);
+
+  // implements Message ----------------------------------------------
+
+  boardAns* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const boardAns& from);
+  void MergeFrom(const boardAns& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required int64 code = 1;
+  inline bool has_code() const;
+  inline void clear_code();
+  static const int kCodeFieldNumber = 1;
+  inline ::google::protobuf::int64 code() const;
+  inline void set_code(::google::protobuf::int64 value);
+
+  // optional .pubsub.GridInfo g = 2;
+  inline bool has_g() const;
+  inline void clear_g();
+  static const int kGFieldNumber = 2;
+  inline const ::pubsub::GridInfo& g() const;
+  inline ::pubsub::GridInfo* mutable_g();
+  inline ::pubsub::GridInfo* release_g();
+  inline void set_allocated_g(::pubsub::GridInfo* g);
+
+  // @@protoc_insertion_point(class_scope:pubsub.boardAns)
+ private:
+  inline void set_has_code();
+  inline void clear_has_code();
+  inline void set_has_g();
+  inline void clear_has_g();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::google::protobuf::int64 code_;
+  ::pubsub::GridInfo* g_;
+  friend void  protobuf_AddDesc_info_2eproto();
+  friend void protobuf_AssignDesc_info_2eproto();
+  friend void protobuf_ShutdownFile_info_2eproto();
+
+  void InitAsDefaultInstance();
+  static boardAns* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class finalInfo : public ::google::protobuf::Message {
+ public:
+  finalInfo();
+  virtual ~finalInfo();
+
+  finalInfo(const finalInfo& from);
+
+  inline finalInfo& operator=(const finalInfo& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const finalInfo& default_instance();
+
+  void Swap(finalInfo* other);
+
+  // implements Message ----------------------------------------------
+
+  finalInfo* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const finalInfo& from);
+  void MergeFrom(const finalInfo& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required int32 ownerScore = 1;
+  inline bool has_ownerscore() const;
+  inline void clear_ownerscore();
+  static const int kOwnerScoreFieldNumber = 1;
+  inline ::google::protobuf::int32 ownerscore() const;
+  inline void set_ownerscore(::google::protobuf::int32 value);
+
+  // required int32 rivalScore = 2;
+  inline bool has_rivalscore() const;
+  inline void clear_rivalscore();
+  static const int kRivalScoreFieldNumber = 2;
+  inline ::google::protobuf::int32 rivalscore() const;
+  inline void set_rivalscore(::google::protobuf::int32 value);
+
+  // @@protoc_insertion_point(class_scope:pubsub.finalInfo)
+ private:
+  inline void set_has_ownerscore();
+  inline void clear_has_ownerscore();
+  inline void set_has_rivalscore();
+  inline void clear_has_rivalscore();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::google::protobuf::int32 ownerscore_;
+  ::google::protobuf::int32 rivalscore_;
+  friend void  protobuf_AddDesc_info_2eproto();
+  friend void protobuf_AssignDesc_info_2eproto();
+  friend void protobuf_ShutdownFile_info_2eproto();
+
+  void InitAsDefaultInstance();
+  static finalInfo* default_instance_;
 };
 // ===================================================================
 
@@ -794,15 +1168,39 @@ inline void SystemQuery::set_allocated_topic(::std::string* topic) {
 
 // SystemAns
 
-// required string content = 2;
-inline bool SystemAns::has_content() const {
+// required int32 id = 1;
+inline bool SystemAns::has_id() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void SystemAns::set_has_content() {
+inline void SystemAns::set_has_id() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void SystemAns::clear_has_content() {
+inline void SystemAns::clear_has_id() {
   _has_bits_[0] &= ~0x00000001u;
+}
+inline void SystemAns::clear_id() {
+  id_ = 0;
+  clear_has_id();
+}
+inline ::google::protobuf::int32 SystemAns::id() const {
+  // @@protoc_insertion_point(field_get:pubsub.SystemAns.id)
+  return id_;
+}
+inline void SystemAns::set_id(::google::protobuf::int32 value) {
+  set_has_id();
+  id_ = value;
+  // @@protoc_insertion_point(field_set:pubsub.SystemAns.id)
+}
+
+// required string content = 2;
+inline bool SystemAns::has_content() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void SystemAns::set_has_content() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void SystemAns::clear_has_content() {
+  _has_bits_[0] &= ~0x00000002u;
 }
 inline void SystemAns::clear_content() {
   if (content_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
@@ -1424,6 +1822,492 @@ inline void GridInfo::set_allocated_grid(::std::string* grid) {
     grid_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   }
   // @@protoc_insertion_point(field_set_allocated:pubsub.GridInfo.grid)
+}
+
+// required int64 type = 4;
+inline bool GridInfo::has_type() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void GridInfo::set_has_type() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void GridInfo::clear_has_type() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void GridInfo::clear_type() {
+  type_ = GOOGLE_LONGLONG(0);
+  clear_has_type();
+}
+inline ::google::protobuf::int64 GridInfo::type() const {
+  // @@protoc_insertion_point(field_get:pubsub.GridInfo.type)
+  return type_;
+}
+inline void GridInfo::set_type(::google::protobuf::int64 value) {
+  set_has_type();
+  type_ = value;
+  // @@protoc_insertion_point(field_set:pubsub.GridInfo.type)
+}
+
+// required string topic = 5;
+inline bool GridInfo::has_topic() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void GridInfo::set_has_topic() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void GridInfo::clear_has_topic() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void GridInfo::clear_topic() {
+  if (topic_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    topic_->clear();
+  }
+  clear_has_topic();
+}
+inline const ::std::string& GridInfo::topic() const {
+  // @@protoc_insertion_point(field_get:pubsub.GridInfo.topic)
+  return *topic_;
+}
+inline void GridInfo::set_topic(const ::std::string& value) {
+  set_has_topic();
+  if (topic_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    topic_ = new ::std::string;
+  }
+  topic_->assign(value);
+  // @@protoc_insertion_point(field_set:pubsub.GridInfo.topic)
+}
+inline void GridInfo::set_topic(const char* value) {
+  set_has_topic();
+  if (topic_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    topic_ = new ::std::string;
+  }
+  topic_->assign(value);
+  // @@protoc_insertion_point(field_set_char:pubsub.GridInfo.topic)
+}
+inline void GridInfo::set_topic(const char* value, size_t size) {
+  set_has_topic();
+  if (topic_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    topic_ = new ::std::string;
+  }
+  topic_->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:pubsub.GridInfo.topic)
+}
+inline ::std::string* GridInfo::mutable_topic() {
+  set_has_topic();
+  if (topic_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    topic_ = new ::std::string;
+  }
+  // @@protoc_insertion_point(field_mutable:pubsub.GridInfo.topic)
+  return topic_;
+}
+inline ::std::string* GridInfo::release_topic() {
+  clear_has_topic();
+  if (topic_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    return NULL;
+  } else {
+    ::std::string* temp = topic_;
+    topic_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    return temp;
+  }
+}
+inline void GridInfo::set_allocated_topic(::std::string* topic) {
+  if (topic_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    delete topic_;
+  }
+  if (topic) {
+    set_has_topic();
+    topic_ = topic;
+  } else {
+    clear_has_topic();
+    topic_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  // @@protoc_insertion_point(field_set_allocated:pubsub.GridInfo.topic)
+}
+
+// required int64 ownerScore = 6;
+inline bool GridInfo::has_ownerscore() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void GridInfo::set_has_ownerscore() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void GridInfo::clear_has_ownerscore() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void GridInfo::clear_ownerscore() {
+  ownerscore_ = GOOGLE_LONGLONG(0);
+  clear_has_ownerscore();
+}
+inline ::google::protobuf::int64 GridInfo::ownerscore() const {
+  // @@protoc_insertion_point(field_get:pubsub.GridInfo.ownerScore)
+  return ownerscore_;
+}
+inline void GridInfo::set_ownerscore(::google::protobuf::int64 value) {
+  set_has_ownerscore();
+  ownerscore_ = value;
+  // @@protoc_insertion_point(field_set:pubsub.GridInfo.ownerScore)
+}
+
+// required int64 rivalScore = 7;
+inline bool GridInfo::has_rivalscore() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+inline void GridInfo::set_has_rivalscore() {
+  _has_bits_[0] |= 0x00000040u;
+}
+inline void GridInfo::clear_has_rivalscore() {
+  _has_bits_[0] &= ~0x00000040u;
+}
+inline void GridInfo::clear_rivalscore() {
+  rivalscore_ = GOOGLE_LONGLONG(0);
+  clear_has_rivalscore();
+}
+inline ::google::protobuf::int64 GridInfo::rivalscore() const {
+  // @@protoc_insertion_point(field_get:pubsub.GridInfo.rivalScore)
+  return rivalscore_;
+}
+inline void GridInfo::set_rivalscore(::google::protobuf::int64 value) {
+  set_has_rivalscore();
+  rivalscore_ = value;
+  // @@protoc_insertion_point(field_set:pubsub.GridInfo.rivalScore)
+}
+
+// required bool isownertune = 8;
+inline bool GridInfo::has_isownertune() const {
+  return (_has_bits_[0] & 0x00000080u) != 0;
+}
+inline void GridInfo::set_has_isownertune() {
+  _has_bits_[0] |= 0x00000080u;
+}
+inline void GridInfo::clear_has_isownertune() {
+  _has_bits_[0] &= ~0x00000080u;
+}
+inline void GridInfo::clear_isownertune() {
+  isownertune_ = false;
+  clear_has_isownertune();
+}
+inline bool GridInfo::isownertune() const {
+  // @@protoc_insertion_point(field_get:pubsub.GridInfo.isownertune)
+  return isownertune_;
+}
+inline void GridInfo::set_isownertune(bool value) {
+  set_has_isownertune();
+  isownertune_ = value;
+  // @@protoc_insertion_point(field_set:pubsub.GridInfo.isownertune)
+}
+
+// required bool ownercanmove = 9;
+inline bool GridInfo::has_ownercanmove() const {
+  return (_has_bits_[0] & 0x00000100u) != 0;
+}
+inline void GridInfo::set_has_ownercanmove() {
+  _has_bits_[0] |= 0x00000100u;
+}
+inline void GridInfo::clear_has_ownercanmove() {
+  _has_bits_[0] &= ~0x00000100u;
+}
+inline void GridInfo::clear_ownercanmove() {
+  ownercanmove_ = false;
+  clear_has_ownercanmove();
+}
+inline bool GridInfo::ownercanmove() const {
+  // @@protoc_insertion_point(field_get:pubsub.GridInfo.ownercanmove)
+  return ownercanmove_;
+}
+inline void GridInfo::set_ownercanmove(bool value) {
+  set_has_ownercanmove();
+  ownercanmove_ = value;
+  // @@protoc_insertion_point(field_set:pubsub.GridInfo.ownercanmove)
+}
+
+// required bool rivalcanmove = 10;
+inline bool GridInfo::has_rivalcanmove() const {
+  return (_has_bits_[0] & 0x00000200u) != 0;
+}
+inline void GridInfo::set_has_rivalcanmove() {
+  _has_bits_[0] |= 0x00000200u;
+}
+inline void GridInfo::clear_has_rivalcanmove() {
+  _has_bits_[0] &= ~0x00000200u;
+}
+inline void GridInfo::clear_rivalcanmove() {
+  rivalcanmove_ = false;
+  clear_has_rivalcanmove();
+}
+inline bool GridInfo::rivalcanmove() const {
+  // @@protoc_insertion_point(field_get:pubsub.GridInfo.rivalcanmove)
+  return rivalcanmove_;
+}
+inline void GridInfo::set_rivalcanmove(bool value) {
+  set_has_rivalcanmove();
+  rivalcanmove_ = value;
+  // @@protoc_insertion_point(field_set:pubsub.GridInfo.rivalcanmove)
+}
+
+// -------------------------------------------------------------------
+
+// boardQuery
+
+// required .pubsub.Pos x = 1;
+inline bool boardQuery::has_x() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void boardQuery::set_has_x() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void boardQuery::clear_has_x() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void boardQuery::clear_x() {
+  if (x_ != NULL) x_->::pubsub::Pos::Clear();
+  clear_has_x();
+}
+inline const ::pubsub::Pos& boardQuery::x() const {
+  // @@protoc_insertion_point(field_get:pubsub.boardQuery.x)
+  return x_ != NULL ? *x_ : *default_instance_->x_;
+}
+inline ::pubsub::Pos* boardQuery::mutable_x() {
+  set_has_x();
+  if (x_ == NULL) x_ = new ::pubsub::Pos;
+  // @@protoc_insertion_point(field_mutable:pubsub.boardQuery.x)
+  return x_;
+}
+inline ::pubsub::Pos* boardQuery::release_x() {
+  clear_has_x();
+  ::pubsub::Pos* temp = x_;
+  x_ = NULL;
+  return temp;
+}
+inline void boardQuery::set_allocated_x(::pubsub::Pos* x) {
+  delete x_;
+  x_ = x;
+  if (x) {
+    set_has_x();
+  } else {
+    clear_has_x();
+  }
+  // @@protoc_insertion_point(field_set_allocated:pubsub.boardQuery.x)
+}
+
+// required int64 type = 2;
+inline bool boardQuery::has_type() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void boardQuery::set_has_type() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void boardQuery::clear_has_type() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void boardQuery::clear_type() {
+  type_ = GOOGLE_LONGLONG(0);
+  clear_has_type();
+}
+inline ::google::protobuf::int64 boardQuery::type() const {
+  // @@protoc_insertion_point(field_get:pubsub.boardQuery.type)
+  return type_;
+}
+inline void boardQuery::set_type(::google::protobuf::int64 value) {
+  set_has_type();
+  type_ = value;
+  // @@protoc_insertion_point(field_set:pubsub.boardQuery.type)
+}
+
+// required string topic = 3;
+inline bool boardQuery::has_topic() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void boardQuery::set_has_topic() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void boardQuery::clear_has_topic() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void boardQuery::clear_topic() {
+  if (topic_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    topic_->clear();
+  }
+  clear_has_topic();
+}
+inline const ::std::string& boardQuery::topic() const {
+  // @@protoc_insertion_point(field_get:pubsub.boardQuery.topic)
+  return *topic_;
+}
+inline void boardQuery::set_topic(const ::std::string& value) {
+  set_has_topic();
+  if (topic_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    topic_ = new ::std::string;
+  }
+  topic_->assign(value);
+  // @@protoc_insertion_point(field_set:pubsub.boardQuery.topic)
+}
+inline void boardQuery::set_topic(const char* value) {
+  set_has_topic();
+  if (topic_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    topic_ = new ::std::string;
+  }
+  topic_->assign(value);
+  // @@protoc_insertion_point(field_set_char:pubsub.boardQuery.topic)
+}
+inline void boardQuery::set_topic(const char* value, size_t size) {
+  set_has_topic();
+  if (topic_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    topic_ = new ::std::string;
+  }
+  topic_->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:pubsub.boardQuery.topic)
+}
+inline ::std::string* boardQuery::mutable_topic() {
+  set_has_topic();
+  if (topic_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    topic_ = new ::std::string;
+  }
+  // @@protoc_insertion_point(field_mutable:pubsub.boardQuery.topic)
+  return topic_;
+}
+inline ::std::string* boardQuery::release_topic() {
+  clear_has_topic();
+  if (topic_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    return NULL;
+  } else {
+    ::std::string* temp = topic_;
+    topic_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    return temp;
+  }
+}
+inline void boardQuery::set_allocated_topic(::std::string* topic) {
+  if (topic_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    delete topic_;
+  }
+  if (topic) {
+    set_has_topic();
+    topic_ = topic;
+  } else {
+    clear_has_topic();
+    topic_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  // @@protoc_insertion_point(field_set_allocated:pubsub.boardQuery.topic)
+}
+
+// -------------------------------------------------------------------
+
+// boardAns
+
+// required int64 code = 1;
+inline bool boardAns::has_code() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void boardAns::set_has_code() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void boardAns::clear_has_code() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void boardAns::clear_code() {
+  code_ = GOOGLE_LONGLONG(0);
+  clear_has_code();
+}
+inline ::google::protobuf::int64 boardAns::code() const {
+  // @@protoc_insertion_point(field_get:pubsub.boardAns.code)
+  return code_;
+}
+inline void boardAns::set_code(::google::protobuf::int64 value) {
+  set_has_code();
+  code_ = value;
+  // @@protoc_insertion_point(field_set:pubsub.boardAns.code)
+}
+
+// optional .pubsub.GridInfo g = 2;
+inline bool boardAns::has_g() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void boardAns::set_has_g() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void boardAns::clear_has_g() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void boardAns::clear_g() {
+  if (g_ != NULL) g_->::pubsub::GridInfo::Clear();
+  clear_has_g();
+}
+inline const ::pubsub::GridInfo& boardAns::g() const {
+  // @@protoc_insertion_point(field_get:pubsub.boardAns.g)
+  return g_ != NULL ? *g_ : *default_instance_->g_;
+}
+inline ::pubsub::GridInfo* boardAns::mutable_g() {
+  set_has_g();
+  if (g_ == NULL) g_ = new ::pubsub::GridInfo;
+  // @@protoc_insertion_point(field_mutable:pubsub.boardAns.g)
+  return g_;
+}
+inline ::pubsub::GridInfo* boardAns::release_g() {
+  clear_has_g();
+  ::pubsub::GridInfo* temp = g_;
+  g_ = NULL;
+  return temp;
+}
+inline void boardAns::set_allocated_g(::pubsub::GridInfo* g) {
+  delete g_;
+  g_ = g;
+  if (g) {
+    set_has_g();
+  } else {
+    clear_has_g();
+  }
+  // @@protoc_insertion_point(field_set_allocated:pubsub.boardAns.g)
+}
+
+// -------------------------------------------------------------------
+
+// finalInfo
+
+// required int32 ownerScore = 1;
+inline bool finalInfo::has_ownerscore() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void finalInfo::set_has_ownerscore() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void finalInfo::clear_has_ownerscore() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void finalInfo::clear_ownerscore() {
+  ownerscore_ = 0;
+  clear_has_ownerscore();
+}
+inline ::google::protobuf::int32 finalInfo::ownerscore() const {
+  // @@protoc_insertion_point(field_get:pubsub.finalInfo.ownerScore)
+  return ownerscore_;
+}
+inline void finalInfo::set_ownerscore(::google::protobuf::int32 value) {
+  set_has_ownerscore();
+  ownerscore_ = value;
+  // @@protoc_insertion_point(field_set:pubsub.finalInfo.ownerScore)
+}
+
+// required int32 rivalScore = 2;
+inline bool finalInfo::has_rivalscore() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void finalInfo::set_has_rivalscore() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void finalInfo::clear_has_rivalscore() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void finalInfo::clear_rivalscore() {
+  rivalscore_ = 0;
+  clear_has_rivalscore();
+}
+inline ::google::protobuf::int32 finalInfo::rivalscore() const {
+  // @@protoc_insertion_point(field_get:pubsub.finalInfo.rivalScore)
+  return rivalscore_;
+}
+inline void finalInfo::set_rivalscore(::google::protobuf::int32 value) {
+  set_has_rivalscore();
+  rivalscore_ = value;
+  // @@protoc_insertion_point(field_set:pubsub.finalInfo.rivalScore)
 }
 
 

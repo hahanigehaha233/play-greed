@@ -5,7 +5,7 @@
 #include <muduo/base/Logging.h>
 
 
-#include<iostream>
+//#include<iostream>
 #include<stdio.h>
 
 
@@ -52,17 +52,11 @@ void connection(PubsubClient* client)
 }
 
 
-void printStr(char* s)
-{
-  clear();
-  move(LINES-2,0);
-  addstr(s);
-  refresh();
-}
 int main(int argc, char* argv[])
 {
     initscr();
     start_color();
+    //nodelay(stdscr,true);
     
     Logger::setLogLevel(Logger::ERROR);
     if(argc == 2)
@@ -83,16 +77,53 @@ int main(int argc, char* argv[])
             client.start();
             char* s = new char[50];
             string line;
+            int val = 1;
             while (true)
             {
-                move(LINES-1,0);
-                getstr(s);
-                clrtoeol();
-                move(LINES -2,0);
-                clrtoeol();
-                //printStr(s);
-                //std::cin>>g_cmd>>g_topic;
-                client.dealCmd(s);
+                echo();
+                move(LINES - 1, 0);
+                switch (getch())
+                {
+                case ':':
+                  getstr(s);
+                  clrtoeol();
+                  client.dealCmd(s);
+                  break;
+                
+                case 'g':
+                case 'G':
+                  move(LINES - 1,0);
+                  clrtoeol();
+                  if(client.gameModel)
+                  {
+                    client.printSystemInfo("You are in game model.");
+                    curs_set(0);
+                    noecho();
+                    while((val = client.tunnel(getch())) > 0)
+                      continue;
+                  }else
+                  {
+                    client.printSystemInfo("You are not in game model.");
+                    break;
+                  }
+                  curs_set(1);
+                  client.printSystemInfo("You are in cmd model.");
+                  
+                default:
+                  move(LINES - 1,0);
+                  clrtoeol();
+                  break;
+                }
+                // }else
+                // {
+                //   move(LINES-1,0);
+                //   echo();
+                //   getstr(s);
+                //   if(s > 0)
+                //   client.dealCmd(s);
+                //   //move(LINES -2,0);
+                //   //clrtoeol();
+                // }
             }
             client.stop();
             CurrentThread::sleepUsec(1000*1000);
